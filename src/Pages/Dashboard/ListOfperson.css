@@ -1,0 +1,31 @@
+.canvasjs-chart-credit{
+    display: none !important;
+}
+
+
+.ring-container {
+    position: relative;
+}
+
+.circle {
+    width: 10px;
+    height: 10px;
+    border: 2px solid white !important;
+    background-color: #62bd19;
+    border-radius: 50%;
+    position: absolute;
+    /* top: -42px; */
+    left: -7px;
+}
+.mpfontsize{
+    font-size: 12px;
+    padding-left: 12px;
+}
+@media screen and (max-width: 700px) {
+    .mpfontsize{
+    font-size: 12px;
+    padding-left: 12px;
+    }
+    
+ }
+ 

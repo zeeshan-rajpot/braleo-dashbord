@@ -1,0 +1,38 @@
+.listing-check{
+  display: inline-block;
+  position: relative;
+  padding-left: 10px;
+  margin-left: 10px;
+  /* margin-top: -20px; */
+  cursor: pointer;
+}
+
+.listing-check input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.listingcustom-checkmark {
+  position: absolute;
+  top: -16px;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border: 2px solid #FFCC35CC!important;
+  border-radius: 5px;
+}
+
+.listing-check input:checked ~ .listingcustom-checkmark:after {
+  content: '';
+  position: absolute;
+  display: block;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid #A76F02;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}

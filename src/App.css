@@ -1,0 +1,154 @@
+:root {
+  --btnbg: #ffcc35;
+}
+
+a {
+  text-decoration: none;
+  /* color: var(--btnbg); */
+}
+
+p {
+  margin-bottom: 0;
+}
+
+body {
+  background-color: #fff !important;
+}
+
+.modal-content {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.borderyellow {
+  border: 1px solid transparent;
+  border-image: linear-gradient(104.58deg,
+      #ee9e03 5.92%,
+      rgba(255, 222, 123, 0.8) 86.02%) 1;
+  border-image-slice: 1;
+  border-radius: 50%;
+}
+
+#SvgjsG1661 {
+  transform: none;
+}
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.chart-text {
+  margin-top: -140px;
+  font-size: 11px;
+  margin-left: -70px;
+}
+
+
+.total-subscriptions-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.thead {
+  background-color: #F5F7F9 !important;
+  color: #757575 !important;
+  border: none !important;
+}
+
+.selected-row {
+  opacity: 0.7;
+  /* Adjust the opacity as needed */
+}
+
+.activeButton {
+  background-color: #596068;
+}
+
+.inactiveButton {
+  background-color: #868E96;
+}
+
+@media (max-width: 768px) {
+
+  /* Adjust styles for smaller screens */
+  .chart-container {
+    flex-direction: column;
+  }
+
+  .chart-text {
+    margin-top: -120px !important;
+    margin-left: 0px;
+    font-size: 12px;
+  }
+
+  .total-subscriptions-value {
+    font-size: 18px;
+  }
+
+  .mobilewidth {
+    width: 100% !important;
+  }
+
+  .fontres {
+    font-size: 10px !important;
+  }
+
+  .respmob {
+    width: 100% !important;
+  }
+
+  .mobileres {
+    display: flex !important;
+    margin-right: 10px !important;
+  }
+}
+
+
+@media screen and (max-width: 767px) {
+  .fontformedia {
+    font-size: 12px !important;
+  }
+
+  .responsivedrop {
+    margin-left: 0px !important;
+  }
+
+  .resgraph {
+    width: 140px !important;
+  }
+}
+
+/* @media screen and (min-width: 768px) and (max-width: 1280px) {
+  .responsivefont {
+    font-size: 1px !important;
+  }
+} */
+
+@media screen and (max-width: 1180px) {
+  .responsivedrop {
+    margin-left: 0px !important;
+    /* Adjust margin for tablets */
+  }
+}
+
+.react-calendar__tile--active {
+  background-color: #CD9403 !important;
+  color: #fff !important;
+  background-size: 10% !important;
+}
+
+.react-calendar__tile--now {
+  background-color: #868E96 !important;
+  color: #fff !important;
+}
+
+.apexcharts-toolbar {
+  display: none !important;
+}
+
+.resgraph {
+  width: 190px;
+}

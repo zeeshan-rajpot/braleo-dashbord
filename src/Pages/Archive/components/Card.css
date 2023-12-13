@@ -1,0 +1,27 @@
+
+.cardbtn {
+  background-color: #0000004d;
+  color: #fff;
+  width: 40%;
+  font-size: 12px;
+}
+
+.title {
+  font-size: 13px;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0.5;
+  right: 0;
+  background-color: rgb(247, 247, 247);
+  /* Adjust the opacity as needed */
+}
+
+.archive-icon {
+  opacity: 1;
+  /* Add other styles for the archive icon as needed */
+}

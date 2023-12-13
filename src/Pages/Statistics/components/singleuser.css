@@ -1,0 +1,62 @@
+/* .cardimg {
+  background-image: url('https://images.unsplash.com/photo-1560914350-23051d1d2987?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  height: 17rem;
+} */
+
+.title {
+  color: #75818D;
+  font-size: 28.538px !important;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.title2 {
+  color: #75818D;
+}
+
+.otherspan {
+  color: #75818D;
+}
+
+.other {
+  color: #ACB6BE;
+
+}
+
+.othersmal {
+  color: #ACB6BE;
+  font-size: 15px !important;
+}
+
+
+
+.headtitle {
+  color: #75818D;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.smallheadtitle {
+  color: #75818D;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.paragraph {
+  color: #ACB6BE;
+  font-size: 14px;
+  font-weight: 500;
+}
+@media screen and (max-width: 767px) {
+  .resp {
+    width: 26rem !important;
+    margin-left: 0 !important;
+  }
+  .modal-body {
+    padding: 0 !important;
+  }
+}

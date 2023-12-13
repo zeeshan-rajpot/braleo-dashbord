@@ -1,0 +1,13 @@
+.backgroundofCard {
+  width: 100%;
+  /* height: 800px; */
+  background-image: url('/public/PinsImages/Rectangle 101.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@font-face {
+  font-family: 'PlusJakartaSans-Bold';
+  src: url('\public\Fonts\BRAELO FONTS\Plus Jakarta/PlusJakartaSans-Bold.ttf') format('truetype');
+}

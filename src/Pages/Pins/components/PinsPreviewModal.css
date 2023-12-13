@@ -1,0 +1,27 @@
+.custom-carousel .carousel-control-prev,
+.custom-carousel .carousel-control-next {
+  display: none;
+}
+
+.carousel-indicators [data-bs-target] {
+  border-radius: 50% !important;
+  height: 7.73px !important;
+  width: 7.73px !important;
+  background-color: #D0D5DD !important;
+}
+
+.carousel-indicators {
+  border: 1px solid #EAECF0 !important;
+  margin-bottom: -40px !important;
+  z-index: 0 !important;
+  border-radius: 77.27px !important;
+  background-color: #EAECF0 !important;
+  margin-left: 30% !important;
+  margin-right: 30% !important;
+}
+
+/* Style active indicator */
+.custom-carousel .carousel-indicators .active {
+  background-color: #495057 !important;
+  
+}

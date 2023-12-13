@@ -1,0 +1,30 @@
+.input-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    padding: 9px;
+    border: 1px solid #ccc;
+    border-radius: 9px;
+}
+
+.input-container img {
+    margin-right: 8px; 
+}
+
+input {
+    border: none;
+    outline: none;
+    flex-grow: 1;
+}
+
+
+
+@media screen and (max-width: 700px) {
+   .paddingtop{
+    padding-top: 10px;
+   }
+   .fontmobile
+   {
+    font-size: 10px;
+   }
+}

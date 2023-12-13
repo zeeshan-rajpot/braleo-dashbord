@@ -1,0 +1,94 @@
+.cardbg {
+    background-image: url('https://images.unsplash.com/photo-1519681467212-9792db1989c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1527&q=80');
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    background-position: center center;
+    height: 100%;
+  }
+  
+  .custom-checkbox {
+    display: inline-block;
+    position: relative;
+    padding-left: 10px;
+    margin-left: 10px;
+    /* margin-top: -20px; */
+    cursor: pointer;
+  }
+  
+  .custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .checkmark {
+    position: absolute;
+    top: -16px;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 2px solid #ffcc35cc;
+  }
+  
+  .custom-checkbox input:checked ~ .checkmark:after {
+    content: '';
+    position: absolute;
+    display: block;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid #a76f02;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  .imgSection {
+    width: 40%;
+  }
+  .contentSection {
+    width: 60%;
+  }
+  
+  .heading {
+    margin-top: 17px;
+    font-size: 12px;
+    color: #000;
+    font-weight: 600;
+  }
+  .subheading1 {
+    /* margin-top: 15px; */
+    font-size: 11px;
+    color: #969696;
+    font-weight: 600;
+  }
+  .subheading {
+    /* margin-top: 15px; */
+    font-size: 10px;
+    color: #969696;
+    font-weight: 600;
+  }
+  .lastheading {
+    font-size: 10px;
+  }
+  .last {
+    font-size: 10px;
+    margin-top: 20px;
+    margin-left: 40px;
+    text-align: right;
+  }
+  .Rectangular {
+    /* margin-left: 6px; */
+    width: 100%;
+    background-color: #fff;
+    color: dimgrey;
+    border-radius: 15px;
+    height: 20%;
+  }
+  .headingImage {
+    width: 60px;
+    padding: 10px;
+    object-fit: cover;
+  }

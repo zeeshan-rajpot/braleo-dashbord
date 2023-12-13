@@ -1,0 +1,16 @@
+.apexchartsg1d2dtgd #SvgjsCircle1609::before {
+  content: 'hello';
+}
+
+.apexcharts-legend-series {
+  text-align: start;
+}
+
+
+
+@media screen and (max-width: 700px) {
+
+  .mobilemargin {
+    margin-left: 30px !important;
+  }
+}

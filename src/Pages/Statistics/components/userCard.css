@@ -1,0 +1,24 @@
+@media screen and (max-width: 767px) {
+  .userImage {
+    width: 70px !important;
+    height: 70px !important;
+  }
+
+  .titleuser {
+    font-size: 15px !important;
+  }
+
+  .title2user {
+    font-size: 12px !important;
+  }
+
+  .puser {
+    font-size: 10px !important;
+  }
+
+  .usericon {
+    width: 50px !important;
+    margin-bottom: 15px !important;
+  }
+
+}
