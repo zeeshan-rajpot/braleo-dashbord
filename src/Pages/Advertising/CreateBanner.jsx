@@ -55,9 +55,38 @@ const CreateBanner = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileSelected = (e) => {
+  const handleFileSelected = async (e) => {
     const selectedFile = e.target.files[0];
-    // Do something with the selected file (e.g., upload or display it)
+
+    if (selectedFile) {
+      try {
+        // Create a FormData object to send the file
+        const formData = new FormData();
+        formData.append("image", selectedFile);
+
+        // Use axios to upload the image to the image upload API
+        const uploadResponse = await axios.post(
+          "https://braelo.azurewebsites.net/api/upload/images?containerName=listing",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        // Assuming the image upload API returns a URL in the response
+        const imageUrl = uploadResponse.data.url;
+
+        // Update the bannerData with the uploaded image URL
+        setBannerData({
+          ...bannerData,
+          thumbnailPicture: imageUrl,
+        });
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    }
   };
 
   const handleNext = async () => {
@@ -68,8 +97,7 @@ const CreateBanner = () => {
         bannerData,
         {
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Mzc5NWUwNmEyMWU2N2JkNDA5NzFlOCIsImlhdCI6MTcwMjAzMDE0OH0.0EPEvn0vbEmm8x1OT3kKSOX5Bod_yWFvVG86YdN8p4s", // Replace yourToken with the actual token
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );

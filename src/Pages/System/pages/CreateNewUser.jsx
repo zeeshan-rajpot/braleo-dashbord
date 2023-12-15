@@ -2,6 +2,8 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { Row, Col } from 'react-bootstrap';
 import CongratulationCard from '../Components/Success.jsx'
+
+
 export const CreateNewUser = () => {
   const [show, setShow] = useState(false);
 
@@ -89,7 +91,7 @@ export const CreateNewUser = () => {
                 />
               </Col>
               <Col xl={6}>
-                <label className='text-muted mt-4 mb-2'>Password</label>
+                <label className='text-muted mt-4 mb-2'>Function</label>
                 <select className='p-3 border rounded-4 w-100 text-muted'>
                   <option value='Administrator'>Administrator</option>
                   <option value='Comercial'>Comercial</option>

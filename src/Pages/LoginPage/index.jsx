@@ -1,11 +1,13 @@
 import { React, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
+import { baseUrl } from "../../Constants/Constants";
 import axios from "axios";
 
 export const index = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigateTo = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -18,8 +20,7 @@ export const index = () => {
 
   const handleLogin = async () => {
     try {
-      const apiUrl =
-        "https://braelo.azurewebsites.net/api/administration/login";
+      const apiUrl = `${baseUrl}/api/administration/login`;
       const response = await axios.post(
         apiUrl,
         { email, password },
@@ -30,20 +31,22 @@ export const index = () => {
         }
       );
 
-      // Assuming response.data.token exists
+      // Correctly access the token from the response
       const token = response.data.token;
 
       // Save the token to local storage
       localStorage.setItem("token", token);
 
-      console.log("Login successful:", response.data.msg);
+      console.log("Login successful:", response.data.token);
 
       // Reset the form after successful login
       setEmail("");
       setPassword("");
+
+      navigateTo("/Dashboard");
     } catch (error) {
       // Handle errors, e.g., display an error message
-      console.error("Error during login:", error.response.data.errors.msg);
+      console.error("Error during login:", error);
     }
   };
   return (
