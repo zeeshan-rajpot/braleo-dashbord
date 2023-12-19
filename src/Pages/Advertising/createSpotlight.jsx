@@ -10,10 +10,15 @@ import axios from "axios";
 import { baseUrl } from "../../Constants/Constants.js";
 
 export const CreateSpotlight = () => {
-  const fileInputRef = useRef(null);
 
-  const handleIconClick = () => {
-    fileInputRef.current.click();
+  const videoFileInputRef = useRef(null);
+  const thumbnailFileInputRef = useRef(null);
+
+  const handleIconClickVideo = () => {
+    videoFileInputRef.current.click();
+  };
+  const handleIconClickthumbnail = () => {
+    thumbnailFileInputRef.current.click();
   };
 
   const [show, setShow] = useState(false);
@@ -31,7 +36,14 @@ export const CreateSpotlight = () => {
     buttonLink: "",
   });
 
-  const handleFileSelected = async (e, field) => {
+  const handleInputChange = (e, field) => {
+    setFormData({
+      ...formData,
+      [field]: e.target.value,
+    });
+  };
+
+  const handleFileSelected = (e, field) => {
     const selectedFile = e.target.files[0];
     setFormData((prevData) => ({
       ...prevData,
@@ -52,15 +64,15 @@ export const CreateSpotlight = () => {
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              // Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
 
-        return uploadResponse.data.url;
+        const videoUrlTest =  uploadResponse.data.url
+
       } catch (error) {
         console.error("Error uploading video:", error);
-        throw error;
       }
     }
   };
@@ -113,24 +125,16 @@ export const CreateSpotlight = () => {
         finalData,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            // Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
           },
         }
       );
 
-      console.log("Response Data:", response.data);
-      handleShow(); // Show the modal on successful submission
+      console.log(formData);
     } catch (error) {
       console.error("Error posting spotlight data:", error);
     }
-  };
-
-  const handleInputChange = (e, field) => {
-    setFormData({
-      ...formData,
-      [field]: e.target.value,
-    });
   };
 
   return (
@@ -212,7 +216,7 @@ export const CreateSpotlight = () => {
                     <img
                       src="./BannerFilesIcon.svg"
                       alt="files icon"
-                      onClick={handleIconClick}
+                      onClick={handleIconClickVideo}
                       style={{
                         cursor: "pointer",
                         marginTop: "50px",
@@ -221,7 +225,7 @@ export const CreateSpotlight = () => {
                     />
                     <input
                       type="file"
-                      ref={fileInputRef}
+                      ref={videoFileInputRef}
                       style={{ display: "none" }}
                       onChange={(e) => handleFileSelected(e, "video")}
                     />
@@ -249,7 +253,7 @@ export const CreateSpotlight = () => {
                     <img
                       src="./BannerFilesIcon.svg"
                       alt="files icon"
-                      onClick={handleIconClick}
+                      onClick={handleIconClickthumbnail}
                       style={{
                         cursor: "pointer",
                         marginTop: "50px",
@@ -258,7 +262,7 @@ export const CreateSpotlight = () => {
                     />
                     <input
                       type="file"
-                      ref={fileInputRef}
+                      ref={thumbnailFileInputRef}
                       style={{ display: "none" }}
                       onChange={(e) => handleFileSelected(e, "videoThumbnail")}
                     />

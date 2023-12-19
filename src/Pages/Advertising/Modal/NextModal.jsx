@@ -1,12 +1,13 @@
 import React, { useState, useRef } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import ConfirmCard from "./ConfirmCard.jsx";
-import axios from 'axios'; 
+import axios from "axios";
 
-const NextModal = ({ onHide, bannerData }) => {
+const NextModal = ({ onHide, bannerData, data }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
-  const handleConfirmation = () => {
+  const handleConfirmation = async () => {
+    data();
     setIsConfirmed(true);
   };
   return (

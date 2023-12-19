@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import SideBar from "../../Components/SideBar.jsx";
 import NaveBar from "../../Components/NaveBar.jsx";
@@ -6,6 +6,8 @@ import BannerTab from "./BannerTab";
 import ModalCard from "./Modal/TextAdd/CreateTextAdd.jsx";
 import Modal from "react-bootstrap/Modal";
 import { baseUrl } from "../../Constants/Constants.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 const CreateTextAdd = () => {
@@ -18,16 +20,20 @@ const CreateTextAdd = () => {
   const [textData, setTextData] = useState({
     // Add your request data here
     type: "TextAd",
-    title: "Special Offer",
-    description: "Get 20% off on all products. Limited time offer!",
+    title: "",
+    description: "",
   });
 
   const handleNextButtonClick = async () => {
     try {
-      // Make the API call with the request payload and headers
+      if (!textData.title || !textData.description) {
+        toast.error("Please fill in all required fields");
+        return;
+      }
+
       const response = await axios.post(
         `${baseUrl}/api/advertisement/new`,
-        textData, // Include the data you want to send in the request body
+        textData,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -35,16 +41,29 @@ const CreateTextAdd = () => {
         }
       );
 
-      // Log the response data
-      console.log("Request", response.data);
+      console.log("Request", response);
+      handleShow();
     } catch (error) {
-      // Handle API call errors
-      console.error("API Error:", error);
+      console.error("Error:", error);
+      toast.error("AD submission failed");
     }
   };
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <ToastContainer />
       <Container fluid className="  h-100">
         <Row>
           <Col
@@ -74,6 +93,7 @@ const CreateTextAdd = () => {
                   onChange={(e) =>
                     setTextData({ ...textData, title: e.target.value })
                   }
+                  required
                 />
               </Col>
             </Row>
@@ -86,6 +106,7 @@ const CreateTextAdd = () => {
                   onChange={(e) =>
                     setTextData({ ...textData, description: e.target.value })
                   }
+                  required
                 />
               </Col>
             </Row>
@@ -100,17 +121,19 @@ const CreateTextAdd = () => {
                   <Col lg={3} xl={3} xs={12}>
                     <button
                       variant="primary"
-                      onClick={handleShow}
+                      onClick={handleNextButtonClick}
                       className=" w-100 p-1 border-0 rounded-2 text-white"
                       style={{ backgroundColor: "#CD9403" }}
-                      onClick={handleNextButtonClick}
                     >
                       Next
                     </button>
                   </Col>
                   <div>
                     <Modal show={show} onHide={handleClose} centered>
-                      <ModalCard onHide={handleClose} />
+                      <ModalCard
+                        onHide={handleClose}
+                        data={handleNextButtonClick}
+                      />
                     </Modal>
                   </div>
                 </Row>

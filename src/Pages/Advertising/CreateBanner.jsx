@@ -5,6 +5,8 @@ import NaveBar from "../../Components/NaveBar.jsx";
 import BannerTab from "./BannerTab";
 import ModalCard from "./Modal/NextModal.jsx";
 import Modal from "react-bootstrap/Modal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 const CreateBanner = () => {
   const [keywordInput, setKeywordInput] = useState("");
@@ -29,7 +31,7 @@ const CreateBanner = () => {
       "Studio",
     ],
     listingType: "Premium",
-    thumbnailPicture: "https://example.com/image.jpg",
+    thumbnailPicture: "",
   });
 
   const addKeyword = () => {
@@ -92,7 +94,7 @@ const CreateBanner = () => {
   const handleNext = async () => {
     try {
       // Use axios to send the bannerData to your API endpoint
-      await axios.post(
+      const response = await axios.post(
         "https://braelo.azurewebsites.net/api/advertisement/new",
         bannerData,
         {
@@ -104,7 +106,7 @@ const CreateBanner = () => {
 
       // If the API call is successful, set isConfirmed to true
       // setIsConfirmed(true);
-      console.log(bannerData);
+      console.log(response);
     } catch (error) {
       // Handle any errors from the API call
       console.error("Error posting banner data:", error);
@@ -296,9 +298,9 @@ const CreateBanner = () => {
                   <button
                     type="button"
                     variant="primary"
-                    onClick={handleNext}
                     className="ms-2 w-100 rounded-3 p-2 border-0 text-white "
                     style={{ backgroundColor: "#596068" }}
+                    onClick={handleShow}
                   >
                     Next
                   </button>
