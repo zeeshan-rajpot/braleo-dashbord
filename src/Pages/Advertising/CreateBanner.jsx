@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import SideBar from "../../Components/SideBar.jsx";
 import NaveBar from "../../Components/NaveBar.jsx";
@@ -8,8 +8,10 @@ import Modal from "react-bootstrap/Modal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+
 const CreateBanner = () => {
   const [keywordInput, setKeywordInput] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
 
   const [bannerData, setBannerData] = useState({
     type: "Banner",
@@ -85,8 +87,14 @@ const CreateBanner = () => {
           ...bannerData,
           thumbnailPicture: imageUrl,
         });
+        const reader = new FileReader();
+        reader.onload = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(selectedFile);
       } catch (error) {
         console.error("Error uploading image:", error);
+        toast.error("Error uploading image");
       }
     }
   };
@@ -107,9 +115,11 @@ const CreateBanner = () => {
       // If the API call is successful, set isConfirmed to true
       // setIsConfirmed(true);
       console.log(response);
+      handleShow();
     } catch (error) {
       // Handle any errors from the API call
       console.error("Error posting banner data:", error);
+      toast.error(error.response.data.errors.msg);
     }
   };
 
@@ -120,6 +130,19 @@ const CreateBanner = () => {
   const handleShow = () => setShow(true);
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <ToastContainer />
       <Container fluid className="  h-100">
         <Row>
           <Col
@@ -151,6 +174,7 @@ const CreateBanner = () => {
                     onChange={(e) =>
                       setBannerData({ ...bannerData, title: e.target.value })
                     }
+                    required
                   />
                 </div>
               </Col>
@@ -167,6 +191,7 @@ const CreateBanner = () => {
                         link: e.target.value,
                       })
                     }
+                    required
                   />
                 </div>
               </Col>
@@ -186,6 +211,7 @@ const CreateBanner = () => {
                         description: e.target.value,
                       })
                     }
+                    required
                   />
                 </div>
               </Col>
@@ -209,6 +235,7 @@ const CreateBanner = () => {
                             addKeyword();
                           }
                         }}
+                        required
                         className=" p-1 w-100"
                       />
                     </div>
@@ -244,23 +271,37 @@ const CreateBanner = () => {
                   className="d-flex flex-column justify-content-center align-items-center w-100 p-4"
                   style={{
                     border: "2px dotted rgba(205, 148, 3, 0.5)",
-                    height: "300px",
+                    height: "auto", // Set the height to auto
+                    position: "relative", // Add position relative
                   }}
                 >
                   <Col xs="auto">
-                    {/* <img src='./BannerFilesIcon.svg' alt='files icon' /> */}
-                    <img
-                      src="./BannerFilesIcon.svg"
-                      alt="files icon"
-                      onClick={handleIconClick}
-                      style={{
-                        cursor: "pointer",
-                        marginTop: "50px",
-                        width: "150%",
-                      }}
-                    />
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="preview"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src="./BannerFilesIcon.svg"
+                        alt="files icon"
+                        onClick={handleIconClick}
+                        style={{
+                          cursor: "pointer",
+                          marginTop: "50px",
+                          width: "150%",
+                        }}
+                      />
+                    )}
                     <input
                       type="file"
+                      accept="image/*"
                       ref={fileInputRef}
                       style={{ display: "none" }}
                       onChange={handleFileSelected}
@@ -300,14 +341,18 @@ const CreateBanner = () => {
                     variant="primary"
                     className="ms-2 w-100 rounded-3 p-2 border-0 text-white "
                     style={{ backgroundColor: "#596068" }}
-                    onClick={handleShow}
+                    onClick={handleNext}
                   >
                     Next
                   </button>
                 </Col>
                 <div>
                   <Modal show={show} centered onHide={handleClose}>
-                    <ModalCard onHide={handleClose} bannerData={bannerData} />
+                    <ModalCard
+                      onHide={handleClose}
+                      bannerData={bannerData}
+                      data={handleNext}
+                    />
                   </Modal>
                 </div>
               </Col>

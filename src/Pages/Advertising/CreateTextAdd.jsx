@@ -26,11 +26,6 @@ const CreateTextAdd = () => {
 
   const handleNextButtonClick = async () => {
     try {
-      if (!textData.title || !textData.description) {
-        toast.error("Please fill in all required fields");
-        return;
-      }
-
       const response = await axios.post(
         `${baseUrl}/api/advertisement/new`,
         textData,
@@ -45,7 +40,7 @@ const CreateTextAdd = () => {
       handleShow();
     } catch (error) {
       console.error("Error:", error);
-      toast.error("AD submission failed");
+      toast.error(error.response.data.errors.msg);
     }
   };
 

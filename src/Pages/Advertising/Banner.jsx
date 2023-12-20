@@ -1,70 +1,43 @@
-import { Row, Col } from 'react-bootstrap';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Row, Col } from "react-bootstrap";
+import "./bannercard.css";
+import BannerCard from "./BannerCard";
+import { baseUrl } from "../../Constants/Constants.js";
 
-import './bannercard.css';
-import BannerCard from './BannerCard';
+
 const Banner = () => {
+  const [bannerData, setBannerData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${baseUrl}/api/advertisement/get-ads?type=Banner`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        setBannerData(response.data.advertisements);
+      } catch (error) {
+        console.error("Error fetching banner data", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
-      <Row className='mt-3'>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
-        <Col md={4}>
-          <BannerCard />
-        </Col>
+      <Row className="mt-3">
+        {bannerData.map((banner) => (
+          <Col key={banner._id} md={4}>
+            <BannerCard banner={banner} />
+          </Col>
+        ))}
       </Row>
     </>
   );

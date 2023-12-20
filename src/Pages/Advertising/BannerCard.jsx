@@ -7,7 +7,7 @@ import Delete from "./Modal/Delet Modal/Delete.jsx";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const BannerCard = () => {
+const BannerCard = ({ banner }) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -45,7 +45,16 @@ const BannerCard = () => {
     <>
       <Card
         className="text-left border-0 bannercard"
-        style={{ width: "100%", height: "90%" }}
+        style={{
+          width: "100%",
+          height: "90%",
+          backgroundImage: `url(${
+            banner.thumbnailPicture ||
+            "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+          })`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       >
         <Row className="my-2">
           <Col className="d-flex justify-content-end me-3">
@@ -105,14 +114,14 @@ const BannerCard = () => {
         </Row>
         <Card.Body>
           <Card.Title style={{ fontSize: "15px", color: "#fff" }}>
-            Advertise your company at Braelo!
+          {banner.title}
           </Card.Title>
           <Card.Text style={{ fontSize: "15px" }}>
             <p className="my-0" style={{ width: "50%", color: "#fff" }}>
-              Check out our plans and boost your sales!
+            {banner.description}
             </p>
             <button className="cardbtn rounded-4 p-2 border-0 mt-3">
-              Advertise Now
+            {banner.link || 'Advertise Now'}
             </button>
             <p
               // className='my-0'
