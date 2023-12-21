@@ -115,7 +115,7 @@ const CreateBanner = () => {
       // If the API call is successful, set isConfirmed to true
       // setIsConfirmed(true);
       console.log(response);
-      handleShow();
+      // handleShow();
     } catch (error) {
       // Handle any errors from the API call
       console.error("Error posting banner data:", error);
@@ -341,7 +341,7 @@ const CreateBanner = () => {
                     variant="primary"
                     className="ms-2 w-100 rounded-3 p-2 border-0 text-white "
                     style={{ backgroundColor: "#596068" }}
-                    onClick={handleNext}
+                    onClick={handleShow}
                   >
                     Next
                   </button>

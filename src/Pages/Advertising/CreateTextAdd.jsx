@@ -5,10 +5,6 @@ import NaveBar from "../../Components/NaveBar.jsx";
 import BannerTab from "./BannerTab";
 import ModalCard from "./Modal/TextAdd/CreateTextAdd.jsx";
 import Modal from "react-bootstrap/Modal";
-import { baseUrl } from "../../Constants/Constants.js";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 
 const CreateTextAdd = () => {
   //------------------------- Modal---------------------------------------
@@ -24,41 +20,12 @@ const CreateTextAdd = () => {
     description: "",
   });
 
-  const handleNextButtonClick = async () => {
-    try {
-      const response = await axios.post(
-        `${baseUrl}/api/advertisement/new`,
-        textData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      console.log("Request", response);
-      handleShow();
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error(error.response.data.errors.msg);
-    }
+  const handleNextButtonClick = () => {
+    handleShow(); // Show the modal
   };
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <ToastContainer />
       <Container fluid className="  h-100">
         <Row>
           <Col
@@ -127,7 +94,7 @@ const CreateTextAdd = () => {
                     <Modal show={show} onHide={handleClose} centered>
                       <ModalCard
                         onHide={handleClose}
-                        data={handleNextButtonClick}
+                        data={textData}
                       />
                     </Modal>
                   </div>

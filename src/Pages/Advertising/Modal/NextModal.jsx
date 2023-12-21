@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import ConfirmCard from "./ConfirmCard.jsx";
 import axios from "axios";
 
-const NextModal = ({ onHide, bannerData, data }) => {
+const NextModal = ({ onHide, data }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   const handleConfirmation = async () => {

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SideBar from "../../Components/SideBar.jsx";
 import NaveBar from "../../Components/NaveBar.jsx";
 import BannerTab from "./BannerTab";
@@ -8,11 +8,15 @@ import ModalCard from "./Modal/spotlight/next.jsx";
 import { Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { baseUrl } from "../../Constants/Constants.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const CreateSpotlight = () => {
-
   const videoFileInputRef = useRef(null);
   const thumbnailFileInputRef = useRef(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [videoPreview, setVideoPreview] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const handleIconClickVideo = () => {
     videoFileInputRef.current.click();
@@ -28,12 +32,13 @@ export const CreateSpotlight = () => {
 
   const [formData, setFormData] = useState({
     type: "Spotlight",
-    adTitle: "",
+    title: "",
     price: "",
-    selectedListing: "",
+    category: "Entertainment",
+    // selectedListing: "",
     video: "",
     videoThumbnail: "",
-    buttonLink: "",
+    link: "",
   });
 
   const handleInputChange = (e, field) => {
@@ -43,12 +48,38 @@ export const CreateSpotlight = () => {
     });
   };
 
+  useEffect(() => {
+    const videoElement = document.getElementById("video-preview");
+
+    if (videoElement && videoPreview) {
+      videoElement.src = videoPreview;
+    }
+  }, [videoPreview]);
+
   const handleFileSelected = (e, field) => {
     const selectedFile = e.target.files[0];
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: selectedFile,
-    }));
+    if (field === "videoThumbnail") {
+      setFormData((prevData) => ({
+        ...prevData,
+        [field]: selectedFile,
+      }));
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(selectedFile);
+    } else if (field === "video") {
+      setFormData((prevData) => ({
+        ...prevData,
+        [field]: selectedFile,
+      }));
+      const reader = new FileReader();
+      reader.onload = () => {
+        setVideoPreview(reader.result);
+        setIsPlaying(true); // Assuming the video is playing by default
+      };
+      reader.readAsDataURL(selectedFile);
+    }
   };
 
   const uploadVideo = async () => {
@@ -59,18 +90,17 @@ export const CreateSpotlight = () => {
         formData.append("video", video);
 
         const uploadResponse = await axios.post(
-          `${baseUrl}/api/upload/videos?containerName=videos`,
+          `https://braelo.azurewebsites.net/api/upload/videos?containerName=videos`,
           formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              // Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
 
-        const videoUrlTest =  uploadResponse.data.url
-
+        return uploadResponse.data.url;
       } catch (error) {
         console.error("Error uploading video:", error);
       }
@@ -85,7 +115,7 @@ export const CreateSpotlight = () => {
         formData.append("image", videoThumbnail);
 
         const uploadResponse = await axios.post(
-          `${baseUrl}/api/upload/images?containerName=listing`,
+          `https://braelo.azurewebsites.net/api/upload/images?containerName=listing`,
           formData,
           {
             headers: {
@@ -111,34 +141,43 @@ export const CreateSpotlight = () => {
       ]);
 
       const finalData = {
-        type: formData.type,
-        title: formData.adTitle,
-        price: formData.price,
-        category: formData.selectedListing,
+        ...formData,
         video: videoUrl,
         videoThumbnail: thumbnailUrl,
-        link: formData.buttonLink,
       };
 
+      console.log(finalData);
       const response = await axios.post(
         `${baseUrl}/api/advertisement/new`,
         finalData,
         {
           headers: {
-            // Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
           },
         }
       );
 
-      console.log(formData);
+      console.log(response);
     } catch (error) {
-      console.error("Error posting spotlight data:", error);
+      toast.error(error.response.data.errors.msg);
     }
   };
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Container fluid className="  h-100">
         <Row>
           <Col
@@ -167,7 +206,7 @@ export const CreateSpotlight = () => {
                     <input
                       placeholder="Immigration Paralegal Services"
                       className="border border-1 rounded-3 p-2 w-100 "
-                      onChange={(e) => handleInputChange(e, "adTitle")}
+                      onChange={(e) => handleInputChange(e, "title")}
                     />
                   </div>
                 </Col>
@@ -190,7 +229,7 @@ export const CreateSpotlight = () => {
                       name="cars"
                       id="cars"
                       className="text-muted border border-1 rounded-3 p-2 w-100 "
-                      onChange={(e) => handleInputChange(e, "selectedListing")}
+                      // onChange={(e) => handleInputChange(e, "selectedListing")}
                     >
                       <option value="Makeup Kit">Makeup Kit</option>
                       <option value="saab">Saab</option>
@@ -208,23 +247,39 @@ export const CreateSpotlight = () => {
                   className="d-flex flex-column justify-content-center align-items-center w-100 p-4"
                   style={{
                     border: "2px dotted rgba(205, 148, 3, 0.5)",
-                    height: "300px",
+                    height: "auto",
+                    position: "relative",
                   }}
                 >
                   <Col xs="auto">
-                    {/* <img src='./BannerFilesIcon.svg' alt='files icon' /> */}
-                    <img
-                      src="./BannerFilesIcon.svg"
-                      alt="files icon"
-                      onClick={handleIconClickVideo}
-                      style={{
-                        cursor: "pointer",
-                        marginTop: "50px",
-                        width: "150%",
-                      }}
-                    />
+                    {videoPreview ? (
+                      <video
+                        id="video-preview"
+                        controls
+                        src={videoPreview}
+                        muted
+                        width="100%"
+                        height="100%"
+                        style={{
+                          borderRadius: "8px",
+                          display: isPlaying ? "block" : "none",
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src="./BannerFilesIcon.svg"
+                        alt="files icon"
+                        onClick={handleIconClickVideo}
+                        style={{
+                          cursor: "pointer",
+                          marginTop: "50px",
+                          width: "150%",
+                        }}
+                      />
+                    )}
                     <input
                       type="file"
+                      accept="video/*"
                       ref={videoFileInputRef}
                       style={{ display: "none" }}
                       onChange={(e) => handleFileSelected(e, "video")}
@@ -245,23 +300,38 @@ export const CreateSpotlight = () => {
                   className="d-flex flex-column justify-content-center align-items-center w-100 p-4"
                   style={{
                     border: "2px dotted rgba(205, 148, 3, 0.5)",
-                    height: "300px",
+                    height: "auto",
+                    position: "relative",
                   }}
                 >
                   <Col xs="auto">
                     {/* <img src='./BannerFilesIcon.svg' alt='files icon' /> */}
-                    <img
-                      src="./BannerFilesIcon.svg"
-                      alt="files icon"
-                      onClick={handleIconClickthumbnail}
-                      style={{
-                        cursor: "pointer",
-                        marginTop: "50px",
-                        width: "150%",
-                      }}
-                    />
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="preview"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src="./BannerFilesIcon.svg"
+                        alt="files icon"
+                        onClick={handleIconClickthumbnail}
+                        style={{
+                          cursor: "pointer",
+                          marginTop: "50px",
+                          width: "150%",
+                        }}
+                      />
+                    )}
                     <input
                       type="file"
+                      accept="image/*"
                       ref={thumbnailFileInputRef}
                       style={{ display: "none" }}
                       onChange={(e) => handleFileSelected(e, "videoThumbnail")}
@@ -286,7 +356,7 @@ export const CreateSpotlight = () => {
                 <input
                   placeholder="wa.me/+1 389XXXXXXXXXXX  |"
                   className="border border-1 rounded-3 p-2 w-100 "
-                  onChange={(e) => handleInputChange(e, "buttonLink")}
+                  onChange={(e) => handleInputChange(e, "link")}
                 />
               </Col>
             </Row>
@@ -314,14 +384,14 @@ export const CreateSpotlight = () => {
                     variant="primary"
                     className="ms-2 w-100 rounded-3 p-2 border-0 text-white "
                     style={{ backgroundColor: "#596068" }}
-                    onClick={handleNext}
+                    onClick={handleShow}
                   >
                     Next
                   </button>
                 </Col>
                 <div>
                   <Modal show={show} onHide={handleClose} centered>
-                    <ModalCard onHide={handleClose} />
+                    <ModalCard onHide={handleClose} data = {handleNext} />
                   </Modal>
                 </div>
               </Col>

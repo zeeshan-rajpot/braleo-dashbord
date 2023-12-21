@@ -1,15 +1,48 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { baseUrl } from "../../../../Constants/Constants";
+import axios from "axios";
 
-export const CreateTextAdd = ({ onHide, data }) => {
+export const CreateTextAdd = ({ onHide, data: textData }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
-  const handleConfirmation = () => {
-    data();
-    setIsConfirmed(true);
+  const handleConfirmation = async (data) => {
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/advertisement/new`,
+        textData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      console.log("Request", response);
+      setIsConfirmed(true); // Update state to show the confirmation screen
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(error.response.data.errors.msg);
+    }
   };
+
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <ToastContainer />
       {!isConfirmed && (
         <div>
           <div
@@ -34,7 +67,7 @@ export const CreateTextAdd = ({ onHide, data }) => {
                 className="border-0 w-100 rounded-2 text-white p-2 m-auto mt-4"
                 style={{ backgroundColor: "#CD9403" }}
                 variant="secondary"
-                onClick={handleConfirmation}
+                onClick={() => handleConfirmation(textData)}
               >
                 Publish
               </button>
