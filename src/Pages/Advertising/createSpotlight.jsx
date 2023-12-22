@@ -134,34 +134,7 @@ export const CreateSpotlight = () => {
   };
 
   const handleNext = async () => {
-    try {
-      const [videoUrl, thumbnailUrl] = await Promise.all([
-        uploadVideo(),
-        uploadThumbnail(),
-      ]);
-
-      const finalData = {
-        ...formData,
-        video: videoUrl,
-        videoThumbnail: thumbnailUrl,
-      };
-
-      console.log(finalData);
-      const response = await axios.post(
-        `${baseUrl}/api/advertisement/new`,
-        finalData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log(response);
-    } catch (error) {
-      toast.error(error.response.data.errors.msg);
-    }
+    handleShow();
   };
 
   return (
@@ -391,7 +364,7 @@ export const CreateSpotlight = () => {
                 </Col>
                 <div>
                   <Modal show={show} onHide={handleClose} centered>
-                    <ModalCard onHide={handleClose} data = {handleNext} />
+                    <ModalCard onHide={handleClose} data={formData} />
                   </Modal>
                 </div>
               </Col>

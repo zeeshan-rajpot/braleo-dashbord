@@ -7,6 +7,7 @@ import axios from "axios";
 
 export const CreateTextAdd = ({ onHide, data: textData }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [errorOccurred, setErrorOccurred] = useState(false);
 
   const handleConfirmation = async (data) => {
     try {
@@ -24,6 +25,7 @@ export const CreateTextAdd = ({ onHide, data: textData }) => {
       setIsConfirmed(true); // Update state to show the confirmation screen
     } catch (error) {
       console.error("Error:", error);
+      setErrorOccurred(true);
       toast.error(error.response.data.errors.msg);
     }
   };
@@ -43,7 +45,7 @@ export const CreateTextAdd = ({ onHide, data: textData }) => {
         theme="light"
       />
       <ToastContainer />
-      {!isConfirmed && (
+      {!isConfirmed && !errorOccurred && (
         <div>
           <div
             className="rounded-3"
@@ -75,7 +77,7 @@ export const CreateTextAdd = ({ onHide, data: textData }) => {
           </Row>
         </div>
       )}{" "}
-      {isConfirmed && (
+      {isConfirmed && !errorOccurred && (
         <div>
           <div
             className="bg-white text-center rounded-4 "

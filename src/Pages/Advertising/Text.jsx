@@ -36,52 +36,6 @@ const Text = () => {
             <TextCard text={text} />
           </Col>
         ))}
-        {/* <Col md={4}>
-          <TextCard />
-        </Col>
-        <Col md={4}>
-          <TextCard />
-        </Col>
-        <Col md={4}>
-          <TextCard />
-        </Col>
-
-        <Col md={4}>
-          <TextCard />
-        </Col>
-        <Col md={4}>
-          <TextCard />
-        </Col>
-        <Col md={4}>
-          <TextCard />
-        </Col>
-
-        <Col md={4}>
-          <TextCard />
-        </Col>
-        <Col md={4}>
-          <TextCard />
-        </Col>
-        <Col md={4}>
-          <TextCard />
-        </Col>
-
-        <Col md={4}>
-          <TextCard />
-        </Col>
-        <Col md={4}>
-          <TextCard />
-        </Col>
-        <Col md={4}>
-          <TextCard />
-        </Col>
-
-        <Col md={4}>
-          <TextCard />
-        </Col>
-        <Col md={4}>
-          <TextCard />
-        </Col> */}
       </Row>
     </>
   );

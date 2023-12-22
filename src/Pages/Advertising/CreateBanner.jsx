@@ -12,6 +12,7 @@ import axios from "axios";
 const CreateBanner = () => {
   const [keywordInput, setKeywordInput] = useState("");
   const [imagePreview, setImagePreview] = useState("");
+  const [errorOccurred, setErrorOccurred] = useState(false);
 
   const [bannerData, setBannerData] = useState({
     type: "Banner",
@@ -99,28 +100,8 @@ const CreateBanner = () => {
     }
   };
 
-  const handleNext = async () => {
-    try {
-      // Use axios to send the bannerData to your API endpoint
-      const response = await axios.post(
-        "https://braelo.azurewebsites.net/api/advertisement/new",
-        bannerData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      // If the API call is successful, set isConfirmed to true
-      // setIsConfirmed(true);
-      console.log(response);
-      // handleShow();
-    } catch (error) {
-      // Handle any errors from the API call
-      console.error("Error posting banner data:", error);
-      toast.error(error.response.data.errors.msg);
-    }
+  const handleNext = () => {
+    handleShow();
   };
 
   //------------------------- Modal---------------------------------------
@@ -348,11 +329,7 @@ const CreateBanner = () => {
                 </Col>
                 <div>
                   <Modal show={show} centered onHide={handleClose}>
-                    <ModalCard
-                      onHide={handleClose}
-                      bannerData={bannerData}
-                      data={handleNext}
-                    />
+                    <ModalCard onHide={handleClose} data={bannerData} />
                   </Modal>
                 </div>
               </Col>

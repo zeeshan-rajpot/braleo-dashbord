@@ -1,19 +1,53 @@
 import React, { useState, useRef } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import ConfirmCard from "./ConfirmCard.jsx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { baseUrl } from "../../../Constants/Constants.js";
 import axios from "axios";
 
-const NextModal = ({ onHide, data }) => {
+const NextModal = ({ onHide, data: bannerData }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [errorOccurred, setErrorOccurred] = useState(false);
 
-  const handleConfirmation = async () => {
-    data();
-    setIsConfirmed(true);
+  const handleConfirmation = async (data) => {
+    try {
+      // Use axios to send the bannerData to your API endpoint
+      const response = await axios.post(
+        `${baseUrl}/api/advertisement/new`,
+        bannerData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      console.log(response);
+      setIsConfirmed(true);
+    } catch (error) {
+      // Handle any errors from the API call
+      console.error("Error posting banner data:", error);
+      setErrorOccurred(true);
+      toast.error(error.response.data.errors.msg);
+    }
   };
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Col lg={12}>
-        {!isConfirmed && (
+        {!isConfirmed && !errorOccurred && (
           <div>
             <div
               style={{ backgroundColor: "#EE9E03" }}
@@ -63,7 +97,7 @@ const NextModal = ({ onHide, data }) => {
             </Row>
           </div>
         )}{" "}
-        {isConfirmed && (
+        {isConfirmed && !errorOccurred && (
           <div
             className="bg-white text-center rounded-4 "
             style={{ height: "500px", width: "80%" }}

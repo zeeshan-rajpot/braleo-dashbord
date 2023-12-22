@@ -3,16 +3,62 @@ import Card from "react-bootstrap/Card";
 import { Row, Col } from "react-bootstrap";
 import Badge from "react-bootstrap/Badge";
 import "../../spotlightCard.css";
-export const next = ({ onHide, data }) => {
-  const [isConfirmed, setIsConfirmed] = useState(false);
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { baseUrl } from "../../../../Constants/Constants";
+import axios from "axios";
 
-  const handleConfirmation = () => {
-    data();
-    setIsConfirmed(true);
+export const next = ({ onHide, data: formData }) => {
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [errorOccurred, setErrorOccurred] = useState(false);
+
+  const handleConfirmation = async (data) => {
+    try {
+      const [videoUrl, thumbnailUrl] = await Promise.all([
+        uploadVideo(),
+        uploadThumbnail(),
+      ]);
+
+      const finalData = {
+        formData,
+        video: videoUrl,
+        videoThumbnail: thumbnailUrl,
+      };
+
+      console.log(finalData);
+      const response = await axios.post(
+        `${baseUrl}/api/advertisement/new`,
+        finalData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response);
+      setIsConfirmed(true);
+    } catch (error) {
+      toast.error(error.response.data.errors.msg);
+      console.log(error, "error");
+    }
   };
   return (
     <>
-      {!isConfirmed && (
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      {!isConfirmed && !errorOccurred && (
         <div>
           <Row className="justify-content-center align-items-center">
             <Col>
@@ -158,7 +204,7 @@ export const next = ({ onHide, data }) => {
         </div>
       )}
 
-      {isConfirmed && (
+      {isConfirmed && !errorOccurred && (
         <div>
           <div
             className="bg-white text-center rounded-4 "
