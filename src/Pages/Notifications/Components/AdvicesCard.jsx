@@ -1,43 +1,40 @@
-import { useState } from 'react';
-import { Row } from 'react-bootstrap';
-import Modal from 'react-bootstrap/Modal';
-import Delete from '../../Advertising/Modal/Delet Modal/Delete.jsx';
-export const AdvicesCard = () => {
-  const [show, setShow] = useState(false);
+import { useEffect, useState } from "react";
+import { Row } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
+import Delete from "../../Advertising/Modal/Delet Modal/Delete.jsx";
 
+export const AdvicesCard = ({ advice }) => {
+  const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   return (
     <div>
-      <div className=' mt-5'>
+      <div className=" mt-5">
         <div
-          className='text-center w-100 rounded-3'
-          style={{ backgroundColor: '#868E96', height: '100%' }}
+          className="text-center w-100 rounded-3"
+          style={{ backgroundColor: "#868E96", height: "100%" }}
         >
           <Row>
-            <div className='text-end my-2'>
+            <div className="text-end my-2">
               <img
-                src='./editadvice.svg'
-                alt='edit Icon'
-                style={{ width: '30px' }}
+                src="./editadvice.svg"
+                alt="edit Icon"
+                style={{ width: "30px" }}
               />
               <img
-                variant='primary'
+                variant="primary"
                 onClick={handleShow}
-                src='./deladvice.svg'
-                alt='del Icon'
-                role='button'
-                style={{ width: '30px' }}
-                className='me-2 ms-2'
+                src="./deladvice.svg"
+                alt="del Icon"
+                role="button"
+                style={{ width: "30px" }}
+                className="me-2 ms-2"
               />
             </div>
           </Row>
-          <h5 className='text-white'>Your account is temporarily suspended.</h5>
-          <p className='text-white  p-2 pb-4'>
-            It appears that you have violated one of the platform's rules. To
-            find out more, please contact support.
-          </p>
+          <h5 className="text-white">{advice.title}</h5>
+          <p className="text-white  p-2 pb-4">{advice.description}</p>
         </div>
       </div>
       <Modal show={show}>

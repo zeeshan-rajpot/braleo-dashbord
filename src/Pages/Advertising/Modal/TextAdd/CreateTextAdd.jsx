@@ -44,7 +44,7 @@ export const CreateTextAdd = ({ onHide, data: textData }) => {
         pauseOnHover
         theme="light"
       />
-      <ToastContainer />
+      
       {!isConfirmed && !errorOccurred && (
         <div>
           <div

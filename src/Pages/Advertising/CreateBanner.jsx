@@ -322,7 +322,7 @@ const CreateBanner = () => {
                     variant="primary"
                     className="ms-2 w-100 rounded-3 p-2 border-0 text-white "
                     style={{ backgroundColor: "#596068" }}
-                    onClick={handleShow}
+                    onClick={handleNext}
                   >
                     Next
                   </button>
