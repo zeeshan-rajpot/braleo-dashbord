@@ -28,7 +28,7 @@ export const FlatCard = () => {
             fontWeight: '400',
           }}
         >
-          Flat
+          yellow
         </p>
         <p className='mb-4 mt-3 '>
           <b style={{ fontSize: '27.04px' }}> $ 14.99 </b>

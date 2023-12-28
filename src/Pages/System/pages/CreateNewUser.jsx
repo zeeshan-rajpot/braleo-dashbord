@@ -8,6 +8,7 @@ import { baseUrl } from "../../../Constants/Constants.js";
 
 const CreateNewUser = () => {
   const [show, setShow] = useState(false);
+  const [data, setData] = useState({});
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,7 +17,7 @@ const CreateNewUser = () => {
     profileImage: "",
     password: "",
   });
-
+  console.log(formData);
   const [selectedImage, setSelectedImage] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -29,41 +30,20 @@ const CreateNewUser = () => {
     }
   };
 
-  const handleImageChange = async (e) => {
+  const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
 
     if (selectedFile) {
-      try {
-        const formData = new FormData();
-        formData.append("image", selectedFile);
-
-        const uploadResponse = await axios.post(
-          `${baseUrl}/api/upload/images?containerName=admin`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        const imageUrl = uploadResponse.data.url;
-
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          profileImage: imageUrl,
-        }));
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        toast.error("Error uploading image");
-      }
+      setSelectedImage(URL.createObjectURL(selectedFile));
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        profileImage: selectedFile,
+      }));
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    // console.log(value);
-
     setFormData({
       ...formData,
       [name]: value,
@@ -72,22 +52,76 @@ const CreateNewUser = () => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.post(
-        `${baseUrl}/api/administration/signup`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      // First, check if an image was selected
+      if (formData.profileImage) {
+        const imageFormData = new FormData();
+        imageFormData.append("image", formData.profileImage);
 
-      console.log(response);
-      handleShow();
+        const uploadResponse = await axios.post(
+          `${baseUrl}/api/upload/images?containerName=admin`,
+          imageFormData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        console.log(uploadResponse);
+
+        // Check if the image upload was successful
+        if (uploadResponse.data.success) {
+          const imageUrl = uploadResponse.data.url;
+
+          // Update the profileImage field with the obtained URL
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            profileImage: imageUrl,
+          }));
+
+          // admin types are       enum: [
+          //   "administrator",
+          //   "copywriter",
+          //   "designer",
+          //   "web developer",
+          //   "copy writer",
+          //   "visual designer",
+          // ],
+
+          const data = {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            role: formData.role,
+            profileImage: imageUrl,
+            password: formData.password,
+          };
+          console.log(data);
+          // Now, make the signup API call with the URL
+          const response = await axios.post(
+            `${baseUrl}/api/administration/signup`,
+            data,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
+          console.log(data);
+          handleShow();
+        } else {
+          // Handle the case where image upload failed
+          toast.error(uploadResponse.data.msg || "Image upload failed.");
+        }
+      } else {
+        // Handle the case where no image was selected
+        toast.error("Please select an image.");
+      }
     } catch (error) {
-      // Handle any errors from the API call
-      console.error("Error posting banner data:", error);
-      toast.error(error.response.data.errors.msg);
+      console.error("Error posting user data:", error);
+      toast.error(error.response?.data?.errors?.msg || "An error occurred.");
+      console.log("dara  " + data);
     }
   };
 
@@ -113,67 +147,69 @@ const CreateNewUser = () => {
           <div className="mt-3">
             <p style={{ color: "#78828A" }}>Profile Picture</p>
             <div className="mt-4">
-              <div
-                style={{
-                  width: "200px",
-                  height: "200px",
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  border: "10px solid #CD9403",
-                }}
-              >
-                {selectedImage ? (
-                  <img
-                    src={URL.createObjectURL(selectedImage)}
-                    alt="Selected Preview"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      overflow: "hidden",
-                    }}
-                  />
-                ) : (
-                  <img
-                    src="./defaultProfile.jpg"
-                    alt="Default Profile Pic"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      overflow: "hidden",
-                    }}
-                  />
-                )}
-              </div>
-              <div
-                style={{
-                  backgroundColor: "#CD9403",
-                  width: "55px",
-                  height: "55px",
-                  borderRadius: "50%",
-                  transform: "translateY(-60px) translateX(150px)",
-                  border: "5px solid #fff",
-                }}
-              >
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={fileInputRef}
-                  onChange={handleImageChange}
-                  style={{ display: "none" }}
-                />
-                <img
-                  src="./Layer 2.svg"
-                  alt=""
+              <div className="mt-4">
+                <div
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
+                    width: "200px",
+                    height: "200px",
+                    borderRadius: "50%",
                     overflow: "hidden",
+                    border: "10px solid #CD9403",
                   }}
-                  onClick={handleImageClick}
-                />
+                >
+                  {selectedImage ? (
+                    <img
+                      src={selectedImage}
+                      alt="Selected Preview"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        overflow: "hidden",
+                      }}
+                    />
+                  ) : (
+                    <img
+                      src="./defaultProfile.jpg"
+                      alt="Default Profile Pic"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        overflow: "hidden",
+                      }}
+                    />
+                  )}
+                </div>
+                <div
+                  style={{
+                    backgroundColor: "#CD9403",
+                    width: "55px",
+                    height: "55px",
+                    borderRadius: "50%",
+                    transform: "translateY(-60px) translateX(150px)",
+                    border: "5px solid #fff",
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
+                    style={{ display: "none" }}
+                  />
+                  <img
+                    src="./Layer 2.svg"
+                    alt=""
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      overflow: "hidden",
+                    }}
+                    onClick={handleImageClick}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -225,11 +261,13 @@ const CreateNewUser = () => {
                   onChange={handleInputChange}
                   className="p-3 border rounded-4 w-100 text-muted"
                 >
-                  <option value="Administrator">Administrator</option>
-                  <option value="Comercial">Comercial</option>
-                  <option value="Web developer">Web developer</option>
-                  <option value="Copywriter">Copywriter</option>
-                  <option value="Visual Designer">Visual Designer</option>
+                  <option value=""></option>
+                  <option value="administrator">Administrator</option>
+                  {/* <option value="Comercial">Comercial</option> */}
+                  <option value="web developer">Web developer</option>
+                  <option value="designer">Web Designer</option>
+                  <option value="copywriter">Copywriter</option>
+                  <option value="visual designer">Visual Designer</option>
                 </select>
               </Col>
             </Row>

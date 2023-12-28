@@ -44,13 +44,12 @@ export const CreateTextAdd = ({ onHide, data: textData }) => {
         pauseOnHover
         theme="light"
       />
-      
       {!isConfirmed && !errorOccurred && (
         <div>
           <div
             className="rounded-3"
             style={{
-              background: " rgb(0,0,0)",
+              // background: " rgb(0,0,0)",
               background:
                 "linear-gradient(0deg, rgba(73, 80, 87, 0.75), rgba(73, 80, 87, 0.75)), linear-gradient(95.42deg, #000000 2.45%, #CD9403 105.69%)",
             }}
