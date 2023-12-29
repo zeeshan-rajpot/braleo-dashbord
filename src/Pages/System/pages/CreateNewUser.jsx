@@ -17,7 +17,6 @@ const CreateNewUser = () => {
     profileImage: "",
     password: "",
   });
-  console.log(formData);
   const [selectedImage, setSelectedImage] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -96,7 +95,6 @@ const CreateNewUser = () => {
             profileImage: imageUrl,
             password: formData.password,
           };
-          // console.log(data);
           // Now, make the signup API call with the URL
           const response = await axios.post(
             `${baseUrl}/api/administration/signup`,
