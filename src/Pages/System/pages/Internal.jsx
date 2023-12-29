@@ -1,53 +1,41 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import CardUser from "../Components/InternalUserCard.jsx";
+
+import axios from "axios";
+import { baseurl } from "../../../const.js";
 export const Internal = () => {
+  const [userData, setUserData] = useState([]);
+
+  useEffect(() => {
+    // Retrieve token from localStorage
+    const token = localStorage.getItem("token");
+
+    // Fetch user data from the API using Axios with the token in the header
+    axios
+      .get(`${baseurl}/api/administration//get-all-internal-users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setUserData(response.data.data);
+
+        console.log(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, []);
   return (
     <div>
-      <Row className="ms-1">
-        <Col xl={6}>
-          <CardUser
-            imageSrc="./image/Internal User/Criss Germano.png"
-            name="Criss Germano"
-            role="Administrator"
-          />
-        </Col>
-        <Col xl={6}>
-          <CardUser
-            imageSrc="./image/Internal User/Marly Silva.png"
-            name="Marly Silva"
-            role="Brand Manager"
-          />
-        </Col>
-        <Col xl={6}>
-          <CardUser
-            imageSrc="./image/Internal User/Paul Germano.png"
-            name="Paul Germano"
-            role="Comercial"
-          />
-        </Col>
-        <Col xl={6}>
-          <CardUser
-            imageSrc="./image/Internal User/Ali Devstore.png"
-            name="Ali Devstore"
-            role="Web developer"
-          />
-        </Col>
-        <Col xl={6}>
-          <CardUser
-            imageSrc="./image/Internal User/Ana Muller.png"
-            name="Ana Muller"
-            role="Copywriter"
-          />
-        </Col>
-        <Col xl={6}>
-          <CardUser
-            imageSrc="./image/Internal User/Jhon Silva.png"
-            name="Jhon Silva"
-            role="Visual Designer"
-          />
-        </Col>
-      </Row>
+      {/* <Row className='ms-1'>
+        <Col xl={6}> */}
+      <CardUser userData={userData} />
+      {/* <CardUser userData={userData}/> */}
+      {/* </Col>
+      
+      </Row> */}
     </div>
   );
 };

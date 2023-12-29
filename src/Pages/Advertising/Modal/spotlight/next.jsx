@@ -8,7 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { baseUrl } from "../../../../Constants/Constants";
 import axios from "axios";
 
-export const next = ({ onHide, data: formData }) => {
+export const next = ({ onHide, data, uploadThumbnail, uploadVideo }) => {
+  console.log(data);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [errorOccurred, setErrorOccurred] = useState(false);
 
@@ -20,12 +21,16 @@ export const next = ({ onHide, data: formData }) => {
       ]);
 
       const finalData = {
-        formData,
+        type: "Spotlight",
+        title: "Sample Spotlight Listing",
+        price: 15.99,
+        category: "Entertainment",
+        link: "https://www.example.com",
         video: videoUrl,
         videoThumbnail: thumbnailUrl,
       };
 
-      console.log(finalData);
+      console.log("helo" + finalData);
       const response = await axios.post(
         `${baseUrl}/api/advertisement/new`,
         finalData,

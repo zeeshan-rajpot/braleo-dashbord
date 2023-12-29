@@ -364,7 +364,12 @@ export const CreateSpotlight = () => {
                 </Col>
                 <div>
                   <Modal show={show} onHide={handleClose} centered>
-                    <ModalCard onHide={handleClose} data={formData} />
+                    <ModalCard
+                      onHide={handleClose}
+                      data={formData}
+                      uploadThumbnail={uploadThumbnail}
+                      uploadVideo={uploadVideo}
+                    />
                   </Modal>
                 </div>
               </Col>

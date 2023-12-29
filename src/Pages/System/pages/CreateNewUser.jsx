@@ -96,7 +96,7 @@ const CreateNewUser = () => {
             profileImage: imageUrl,
             password: formData.password,
           };
-          console.log(data);
+          // console.log(data);
           // Now, make the signup API call with the URL
           const response = await axios.post(
             `${baseUrl}/api/administration/signup`,
@@ -121,7 +121,7 @@ const CreateNewUser = () => {
     } catch (error) {
       console.error("Error posting user data:", error);
       toast.error(error.response?.data?.errors?.msg || "An error occurred.");
-      console.log("dara  " + data);
+    
     }
   };
 
