@@ -109,7 +109,7 @@ const SpotlightCard = ({ spotlight }) => {
                 alt="logo"
                 style={{ width: "10%", height: "10%", marginRight: "5px" }}
               />
-              VIP ${spotlight.price}
+              $ VIP {spotlight.price}
             </p>
             <p className=" subheading my-0">
               <img

@@ -8,9 +8,6 @@ export const activePlans = () => {
   return (
     <div className='mt-5'>
       <Row>
-      
-      
-      
         <Col xl={4} lg={4} md={4} xs={12}>
           <FlatCard />
         </Col>
