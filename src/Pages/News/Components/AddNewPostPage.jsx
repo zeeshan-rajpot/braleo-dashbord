@@ -3,6 +3,11 @@ import { Row, Col } from "react-bootstrap";
 import TextEditor from "./TextEditor.jsx";
 import ScheduleCard from "./ScheduleCard.jsx";
 import Modal from "react-bootstrap/Modal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { baseUrl } from "../../../Constants/Constants.js";
+
 export const AddNewPostPage = () => {
   const [isActive, setIsActive] = useState(false);
   const [selected, setIsSelected] = useState("Massive actions");
@@ -14,6 +19,7 @@ export const AddNewPostPage = () => {
   const [fselected, fsetIsSelected] = useState("Font");
   const [szisActive, szsetIsActive] = useState(false);
   const [szselected, szsetIsSelected] = useState("12pt");
+  const [errorOccurred, setErrorOccurred] = useState(false);
   // Define a function to handle dropdown item clicks
   const handleDropdownItemClick = (data) => {
     setIsSelected(data);
@@ -34,17 +40,6 @@ export const AddNewPostPage = () => {
         setDisplayData("");
         break;
     }
-  };
-  const fileInputRef = useRef(null);
-
-  const handleIconClick = () => {
-    // Trigger the file input when the icon is clicked
-    fileInputRef.current.click();
-  };
-
-  const handleFileSelected = (e) => {
-    const selectedFile = e.target.files[0];
-    // Do something with the selected file (e.g., upload or display it)
   };
 
   const [keywordInput, setKeywordInput] = useState("");
@@ -87,21 +82,155 @@ export const AddNewPostPage = () => {
     postThumbnail: "",
     authorName: "",
     profilePic: "",
+    images: [
+      "https://example.com/image1.jpg",
+      "https://example.com/image2.jpg",
+    ],
     keywords: keywords,
-    scheduledAt: "", // Scheduled publication date and time in ISO format
+    scheduledAt: "2023-10-15T12:00:00Z", // Scheduled publication date and time in ISO format
     isActive: false,
   });
 
   const handleInputChange = (e) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
     setPostData({
       ...postData,
       [name]: value,
     });
   };
 
+  const postThumbnailInputRef = useRef(null);
+  const profilePicInputRef = useRef(null);
+
+  const handleIconClick = (inputRef) => {
+    // Trigger the file input when the icon is clicked
+    inputRef.current.click();
+  };
+
+  const [postThumbnailPreview, setPostThumbnailPreview] = useState("");
+  const [profilePicPreview, setProfilePicPreview] = useState("");
+
+  const handlePostThumbnailSelected = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      try {
+        const formData = new FormData();
+        formData.append("image", selectedFile);
+
+        const uploadResponse = await axios.post(
+          `${baseUrl}/api/upload/images?containerName=listing`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        const imageUrl = uploadResponse.data.url;
+
+        setPostData({
+          ...postData,
+          postThumbnail: imageUrl,
+        });
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          setPostThumbnailPreview(reader.result);
+        };
+        reader.readAsDataURL(selectedFile);
+      } catch (error) {
+        console.error("Error uploading post thumbnail:", error);
+        toast.error("Error uploading post thumbnail");
+      }
+    }
+  };
+
+  const handleProfilePicSelected = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      try {
+        const formData = new FormData();
+        formData.append("image", selectedFile);
+
+        const uploadResponse = await axios.post(
+          `${baseUrl}/api/upload/images?containerName=listing`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        const imageUrl = uploadResponse.data.url;
+
+        setPostData({
+          ...postData,
+          profilePic: imageUrl,
+        });
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          setProfilePicPreview(reader.result);
+        };
+        reader.readAsDataURL(selectedFile);
+      } catch (error) {
+        console.error("Error uploading profile pic:", error);
+        toast.error("Error uploading profile pic");
+      }
+    }
+  };
+
+  const [postContent, setPostContent] = useState("");
+
+  // Callback function to update content in AddNewPostPage
+  const handleContentChange = (content) => {
+    setPostContent(content);
+  };
+
+  const handlePublish = async () => {
+    const postDataToSend = {
+      ...postData,
+      content: postContent, // Include the content in the post data
+    };
+    try {
+      // Use axios to send the bannerData to your API endpoint
+      const response = await axios.post(
+        `${baseUrl}/api/post/new`,
+        postDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      console.log(response);
+      console.log(postDataToSend);
+    } catch (error) {
+      console.log(postDataToSend);
+      // Handle any errors from the API call
+      console.error("Error posting Post data:", error);
+      setErrorOccurred(true);
+      toast.error(error.response.data.errors.msg);
+    }
+  };
+
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Row>
         <Col md={8}>
           {" "}
@@ -285,7 +414,7 @@ export const AddNewPostPage = () => {
           </Row>
           <Row className="mt-3">
             <Col xs={12} xl={12} lg={12}>
-              <TextEditor />
+              <TextEditor onContentChange={handleContentChange} />
             </Col>
           </Row>
           <Row className="mt-5">
@@ -297,27 +426,40 @@ export const AddNewPostPage = () => {
                 className="d-flex flex-column justify-content-center align-items-center w-100 p-4"
                 style={{
                   border: "2px dotted rgba(205, 148, 3, 0.5)",
-                  height: "300px",
-                  borderRadius: "11.891px",
+                  height: "auto", // Set the height to auto
+                  position: "relative", // Add position relative
                 }}
               >
                 <Col xs="auto">
-                  {/* <img src='./BannerFilesIcon.svg' alt='files icon' /> */}
-                  <img
-                    src="./BannerFilesIcon.svg"
-                    alt="files icon"
-                    onClick={handleIconClick}
-                    style={{
-                      cursor: "pointer",
-                      marginTop: "50px",
-                      width: "150%",
-                    }}
-                  />
+                  {postThumbnailPreview ? (
+                    <img
+                      src={postThumbnailPreview}
+                      alt="preview"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
+                    />
+                  ) : (
+                    <img
+                      src="./BannerFilesIcon.svg"
+                      alt="files icon"
+                      onClick={() => handleIconClick(postThumbnailInputRef)}
+                      style={{
+                        cursor: "pointer",
+                        marginTop: "50px",
+                        width: "150%",
+                      }}
+                    />
+                  )}
                   <input
                     type="file"
-                    ref={fileInputRef}
+                    accept="image/*"
+                    ref={postThumbnailInputRef}
                     style={{ display: "none" }}
-                    onChange={handleFileSelected}
+                    onChange={handlePostThumbnailSelected}
                   />
                 </Col>
                 <Col>
@@ -339,7 +481,8 @@ export const AddNewPostPage = () => {
               <input
                 placeholder="Criss Germano"
                 className="p-3 border border-1 rounded-3 p-2 w-100 "
-                name =""
+                name="authorName"
+                onChange={handleInputChange}
               />
             </Col>
           </Row>
@@ -350,27 +493,40 @@ export const AddNewPostPage = () => {
                 className="d-flex flex-column justify-content-center align-items-center w-100 p-4"
                 style={{
                   border: "2px dotted rgba(205, 148, 3, 0.5)",
-                  height: "300px",
-                  borderRadius: "11.891px",
+                  height: "auto", // Set the height to auto
+                  position: "relative", // Add position relative
                 }}
               >
                 <Col xs="auto">
-                  {/* <img src='./BannerFilesIcon.svg' alt='files icon' /> */}
-                  <img
-                    src="./BannerFilesIcon.svg"
-                    alt="files icon"
-                    onClick={handleIconClick}
-                    style={{
-                      cursor: "pointer",
-                      marginTop: "50px",
-                      width: "150%",
-                    }}
-                  />
+                  {profilePicPreview ? (
+                    <img
+                      src={profilePicPreview}
+                      alt="preview"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
+                    />
+                  ) : (
+                    <img
+                      src="./BannerFilesIcon.svg"
+                      alt="files icon"
+                      onClick={() => handleIconClick(profilePicInputRef)}
+                      style={{
+                        cursor: "pointer",
+                        marginTop: "50px",
+                        width: "150%",
+                      }}
+                    />
+                  )}
                   <input
                     type="file"
-                    ref={fileInputRef}
+                    accept="image/*"
+                    ref={profilePicInputRef}
                     style={{ display: "none" }}
-                    onChange={handleFileSelected}
+                    onChange={handleProfilePicSelected}
                   />
                 </Col>
                 <Col>
@@ -465,6 +621,7 @@ export const AddNewPostPage = () => {
             <button
               className="ms-2 py-2 w-100 px-4  bg-dark text-white border-0 rounded-3 "
               style={{ backgroundColor: "#596068" }}
+              onClick={handlePublish}
             >
               Publish
             </button>

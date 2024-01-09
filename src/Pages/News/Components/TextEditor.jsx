@@ -2,7 +2,7 @@ import React from 'react';
 import 'quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 
-const TextEditor = () => {
+const TextEditor = ({ onContentChange }) => {
   var modules = {
     toolbar: [
       [{ size: ['small', false, 'large', 'huge'] }],
@@ -81,6 +81,7 @@ const TextEditor = () => {
 
   const handleProcedureContentChange = content => {
     console.log('content---->', content);
+    onContentChange(content);
   };
 
   return (

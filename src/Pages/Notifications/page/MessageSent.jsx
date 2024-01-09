@@ -180,19 +180,10 @@ export const MessageSent = () => {
       </Row>
       <Row>
         {displayData.map((message) => (
-          <Col md={6} xl={6} xs={12} key={message._id}>
+          <Col md={6} xl={6} xs={12} key={message._id}> 
             <PromotionCard message={message} />
           </Col>
         ))}
-        {/* <Col md={6} xl={6} xs={12}>
-          {displayData}
-        </Col>
-        <Col md={6} xl={6} xs={12}>
-          {displayData}
-        </Col>
-        <Col md={6} xl={6} xs={12}>
-          {displayData}
-        </Col> */}
       </Row>
     </div>
   );

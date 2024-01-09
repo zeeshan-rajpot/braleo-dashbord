@@ -123,7 +123,6 @@ const CreateBanner = () => {
         pauseOnHover
         theme="light"
       />
-      <ToastContainer />
       <Container fluid className="  h-100">
         <Row>
           <Col

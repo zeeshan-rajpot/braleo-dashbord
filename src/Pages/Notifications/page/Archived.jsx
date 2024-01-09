@@ -7,7 +7,7 @@ import '../Components/PromotionCard.css';
 export const Archived = () => {
   const [isActive, setIsActive] = useState(false);
   const [selected, setIsSelected] = useState('Massive actions');
-  const [displayData, setDisplayData] = useState(<PromotionCard />); // Initialize with "hello" message
+  const [displayData, setDisplayData] = useState([]); // Initialize with "hello" message
   const [isActivee, setIsActivee] = useState(false);
   const [selectedd, setIsSelectedd] = useState('Filter by time');
   // Define a function to handle dropdown item clicks
