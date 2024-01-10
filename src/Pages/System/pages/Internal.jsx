@@ -29,13 +29,7 @@ export const Internal = () => {
   }, []);
   return (
     <div>
-      {/* <Row className='ms-1'>
-        <Col xl={6}> */}
       <CardUser userData={userData} />
-      {/* <CardUser userData={userData}/> */}
-      {/* </Col>
-      
-      </Row> */}
     </div>
   );
 };

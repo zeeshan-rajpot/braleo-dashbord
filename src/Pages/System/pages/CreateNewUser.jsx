@@ -78,14 +78,6 @@ const CreateNewUser = () => {
             profileImage: imageUrl,
           }));
 
-          // admin types are       enum: [
-          //   "administrator",
-          //   "copywriter",
-          //   "designer",
-          //   "web developer",
-          //   "copy writer",
-          //   "visual designer",
-          // ],
 
           const data = {
             name: formData.name,
