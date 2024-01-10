@@ -7,12 +7,15 @@ import ModalCard from "./Modal/NextModal.jsx";
 import Modal from "react-bootstrap/Modal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { css } from "@emotion/react";
+import { ClipLoader } from "react-spinners";
 import axios from "axios";
 
 const CreateBanner = () => {
   const [keywordInput, setKeywordInput] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [errorOccurred, setErrorOccurred] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [bannerData, setBannerData] = useState({
     type: "Banner",
@@ -61,6 +64,7 @@ const CreateBanner = () => {
   };
 
   const handleFileSelected = async (e) => {
+    setLoading(true);
     const selectedFile = e.target.files[0];
 
     if (selectedFile) {
@@ -96,6 +100,8 @@ const CreateBanner = () => {
       } catch (error) {
         console.error("Error uploading image:", error);
         toast.error("Error uploading image");
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -256,37 +262,49 @@ const CreateBanner = () => {
                   }}
                 >
                   <Col xs="auto">
-                    {imagePreview ? (
-                      <img
-                        src={imagePreview}
-                        alt="preview"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          borderRadius: "8px",
-                        }}
+                    {loading ? (
+                      <ClipLoader
+                        color={"#ffcc35"}
+                        loading={loading}
+                        size={100}
+                        
                       />
                     ) : (
-                      <img
-                        src="./BannerFilesIcon.svg"
-                        alt="files icon"
-                        onClick={handleIconClick}
-                        style={{
-                          cursor: "pointer",
-                          marginTop: "50px",
-                          width: "150%",
-                        }}
-                      />
+                      <>
+                        {imagePreview ? (
+                          <img
+                            src={imagePreview}
+                            alt="preview"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              borderRadius: "8px",
+                            }}
+                          />
+                        ) : (
+                          <img
+                            src="./BannerFilesIcon.svg"
+                            alt="files icon"
+                            onClick={handleIconClick}
+                            style={{
+                              cursor: "pointer",
+                              marginTop: "50px",
+                              width: "150%",
+                            }}
+                          />
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          ref={fileInputRef}
+                          style={{ display: "none" }}
+                          onChange={handleFileSelected}
+                        />
+                      </>
                     )}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      ref={fileInputRef}
-                      style={{ display: "none" }}
-                      onChange={handleFileSelected}
-                    />
                   </Col>
+
                   <Col>
                     <p className="text-muted text-center fs-6 mt-2">
                       <span style={{ fontSize: "12px" }}>

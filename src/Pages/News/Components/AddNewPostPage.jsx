@@ -88,7 +88,6 @@ export const AddNewPostPage = () => {
     ],
     keywords: keywords,
     scheduledAt: "2023-10-15T12:00:00Z", // Scheduled publication date and time in ISO format
-    isActive: false,
   });
 
   const handleInputChange = (e) => {
