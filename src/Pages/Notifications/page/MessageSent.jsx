@@ -4,13 +4,17 @@ import PromotionCard from "../Components/PromotionCard.jsx";
 import DisableCard from "../Components/DisableCard.jsx";
 import "../Components/PromotionCard.css";
 import { baseUrl } from "../../../Constants/Constants.js";
+import { ClipLoader } from "react-spinners";
 import axios from "axios";
+
 export const MessageSent = () => {
   const [isActive, setIsActive] = useState(false);
   const [selected, setIsSelected] = useState("Massive actions");
   const [displayData, setDisplayData] = useState([]);
   const [isActivee, setIsActivee] = useState(false);
   const [selectedd, setIsSelectedd] = useState("Filter by time");
+  const [loading, setLoading] = useState(true);
+
   const handleDropdownItemClick = (data) => {
     setIsSelected(data);
     setIsActive(false);
@@ -52,6 +56,9 @@ export const MessageSent = () => {
       })
       .catch((err) => {
         console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -178,13 +185,24 @@ export const MessageSent = () => {
         </Col>
         <Col md={2}></Col>
       </Row>
-      <Row>
-        {displayData.map((message) => (
-          <Col md={6} xl={6} xs={12} key={message._id}> 
-            <PromotionCard message={message} />
-          </Col>
-        ))}
-      </Row>
+      {loading ? (
+        <div
+          className="d-flex justify-content-center   align-items-center  "
+          style={{
+            height: "70vh",
+          }}
+        >
+          <ClipLoader color={"#ffcc35"} loading={loading} size={200} />
+        </div>
+      ) : (
+        <Row>
+          {displayData.map((message) => (
+            <Col md={6} xl={6} xs={12} key={message._id}>
+              <PromotionCard message={message} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </div>
   );
 };

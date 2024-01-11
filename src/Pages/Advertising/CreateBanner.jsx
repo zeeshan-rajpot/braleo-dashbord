@@ -7,7 +7,6 @@ import ModalCard from "./Modal/NextModal.jsx";
 import Modal from "react-bootstrap/Modal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
 

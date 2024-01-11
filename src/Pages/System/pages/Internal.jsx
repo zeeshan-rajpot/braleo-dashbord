@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import CardUser from "../Components/InternalUserCard.jsx";
-
 import axios from "axios";
+import { ClipLoader } from "react-spinners";
 import { baseurl } from "../../../const.js";
+
 export const Internal = () => {
   const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Retrieve token from localStorage
@@ -25,11 +27,25 @@ export const Internal = () => {
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
   return (
     <div>
-      <CardUser userData={userData} />
+      {loading ? (
+        <div
+          className="d-flex justify-content-center   align-items-center  "
+          style={{
+            height: "70vh",
+          }}
+        >
+          <ClipLoader color={"#ffcc35"} loading={loading} size={200} />
+        </div>
+      ) : (
+        <CardUser userData={userData} />
+      )}
     </div>
   );
 };

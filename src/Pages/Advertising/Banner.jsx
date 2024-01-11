@@ -4,10 +4,11 @@ import { Row, Col } from "react-bootstrap";
 import "./bannercard.css";
 import BannerCard from "./BannerCard";
 import { baseUrl } from "../../Constants/Constants.js";
-
+import { ClipLoader } from "react-spinners";
 
 const Banner = () => {
   const [bannerData, setBannerData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +25,8 @@ const Banner = () => {
         setBannerData(response.data.advertisements);
       } catch (error) {
         console.error("Error fetching banner data", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -32,13 +35,24 @@ const Banner = () => {
 
   return (
     <>
-      <Row className="mt-3">
-        {bannerData.map((banner) => (
-          <Col key={banner._id} md={4}>
-            <BannerCard banner={banner} />
-          </Col>
-        ))}
-      </Row>
+      {loading ? (
+        <div
+          className="d-flex justify-content-center   align-items-center  "
+          style={{
+            height: "70vh",
+          }}
+        >
+          <ClipLoader color={"#ffcc35"} loading={loading} size={200} />
+        </div>
+      ) : (
+        <Row className="mt-3">
+          {bannerData.map((banner) => (
+            <Col key={banner._id} md={4}>
+              <BannerCard banner={banner} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </>
   );
 };

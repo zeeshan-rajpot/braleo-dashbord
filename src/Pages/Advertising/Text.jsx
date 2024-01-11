@@ -3,9 +3,11 @@ import { Col, Row, Badge } from "react-bootstrap";
 import TextCard from "./TextCard";
 import axios from "axios";
 import { baseUrl } from "../../Constants/Constants.js";
+import { ClipLoader } from "react-spinners";
 
 const Text = () => {
   const [textData, setTextData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +24,8 @@ const Text = () => {
         setTextData(response.data.advertisements);
       } catch (error) {
         console.error("Error fetching banner data", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -30,13 +34,25 @@ const Text = () => {
 
   return (
     <>
-      <Row>
-        {textData.map((text) => (
-          <Col key={text._id} md={4}>
-            <TextCard text={text} />
-          </Col>
-        ))}
-      </Row>
+      {" "}
+      {loading ? (
+        <div
+          className="d-flex justify-content-center   align-items-center  "
+          style={{
+            height: "70vh",
+          }}
+        >
+          <ClipLoader color={"#ffcc35"} loading={loading} size={200} />
+        </div>
+      ) : (
+        <Row>
+          {textData.map((text) => (
+            <Col key={text._id} md={4}>
+              <TextCard text={text} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </>
   );
 };

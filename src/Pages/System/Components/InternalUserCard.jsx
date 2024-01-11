@@ -18,7 +18,6 @@ export const InternalUserCard = ({ userData }) => {
     setSelectedUserId(userId);
   };
 
-  // console.log(userData[0]._id)
   return (
     <>
       <Row className="ms-1">

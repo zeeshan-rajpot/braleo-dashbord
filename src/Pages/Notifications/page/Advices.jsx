@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import AdvicesCard from "../Components/AdvicesCard.jsx";
 import { baseUrl } from "../../../Constants/Constants.js";
+import { ClipLoader } from "react-spinners";
 import axios from "axios";
+
 export const Advices = () => {
   const [advices, setAdvices] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     getAdvices();
   }, []);
@@ -21,34 +25,32 @@ export const Advices = () => {
       })
       .catch((error) => {
         console.log("Error: ", error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
   return (
     <div>
-      <Row className="d-flex">
-        {advices.map((advice) => (
-          <Col lg={4} xl={4} xs={12} key={advice.id}>
-            <AdvicesCard advice={advice} />
-          </Col>
-        ))}
-
-        {/* <Col lg={4} xl={4} xs={12}>
-          <AdvicesCard />
-        </Col>
-        <Col lg={4} xl={4} xs={12}>
-          <AdvicesCard />
-        </Col>
-        <Col lg={4} xl={4} xs={12}>
-          <AdvicesCard />
-        </Col>
-        <Col lg={4} xl={4} xs={12}>
-          <AdvicesCard />
-        </Col>
-        <Col lg={4} xl={4} xs={12}>
-          <AdvicesCard />
-        </Col> */}
-      </Row>
+      {loading ? (
+        <div
+          className="d-flex justify-content-center   align-items-center  "
+          style={{
+            height: "70vh",
+          }}
+        >
+          <ClipLoader color={"#ffcc35"} loading={loading} size={200} />
+        </div>
+      ) : (
+        <Row className="d-flex">
+          {advices.map((advice) => (
+            <Col lg={4} xl={4} xs={12} key={advice.id}>
+              <AdvicesCard advice={advice} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </div>
   );
 };

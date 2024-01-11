@@ -9,6 +9,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { baseUrl } from "../../Constants/Constants.js";
 import { ToastContainer, toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
 import "react-toastify/dist/ReactToastify.css";
 
 export const CreateSpotlight = () => {
@@ -17,6 +18,9 @@ export const CreateSpotlight = () => {
   const [imagePreview, setImagePreview] = useState("");
   const [videoPreview, setVideoPreview] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [videoLoading, setVideoLoading] = useState(false);
+  const [thumbnailLoading, setThumbnailLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleIconClickVideo = () => {
     videoFileInputRef.current.click();
@@ -58,11 +62,13 @@ export const CreateSpotlight = () => {
 
   const handleFileSelected = (e, field) => {
     const selectedFile = e.target.files[0];
+
     if (field === "videoThumbnail") {
       setFormData((prevData) => ({
         ...prevData,
         [field]: selectedFile,
       }));
+
       const reader = new FileReader();
       reader.onload = () => {
         setImagePreview(reader.result);
@@ -73,6 +79,7 @@ export const CreateSpotlight = () => {
         ...prevData,
         [field]: selectedFile,
       }));
+
       const reader = new FileReader();
       reader.onload = () => {
         setVideoPreview(reader.result);
@@ -83,7 +90,10 @@ export const CreateSpotlight = () => {
   };
 
   const uploadVideo = async () => {
+    setVideoLoading(true);
+
     const { video } = formData;
+
     if (video) {
       try {
         const formData = new FormData();
@@ -103,12 +113,17 @@ export const CreateSpotlight = () => {
         return uploadResponse.data.url;
       } catch (error) {
         console.error("Error uploading video:", error);
+      } finally {
+        setVideoLoading(false);
       }
     }
   };
 
   const uploadThumbnail = async () => {
+    setThumbnailLoading(true);
+
     const { videoThumbnail } = formData;
+
     if (videoThumbnail) {
       try {
         const formData = new FormData();
@@ -128,7 +143,8 @@ export const CreateSpotlight = () => {
         return uploadResponse.data.url;
       } catch (error) {
         console.error("Error uploading thumbnail:", error);
-        throw error;
+      } finally {
+        setThumbnailLoading(false);
       }
     }
   };
@@ -225,38 +241,48 @@ export const CreateSpotlight = () => {
                   }}
                 >
                   <Col xs="auto">
-                    {videoPreview ? (
-                      <video
-                        id="video-preview"
-                        controls
-                        src={videoPreview}
-                        muted
-                        width="100%"
-                        height="100%"
-                        style={{
-                          borderRadius: "8px",
-                          display: isPlaying ? "block" : "none",
-                        }}
+                    {videoLoading ? (
+                      <ClipLoader
+                        color={"#ffcc35"}
+                        loading={videoLoading}
+                        size={100}
                       />
                     ) : (
-                      <img
-                        src="./BannerFilesIcon.svg"
-                        alt="files icon"
-                        onClick={handleIconClickVideo}
-                        style={{
-                          cursor: "pointer",
-                          marginTop: "50px",
-                          width: "150%",
-                        }}
-                      />
+                      <>
+                        {videoPreview ? (
+                          <video
+                            id="video-preview"
+                            controls
+                            src={videoPreview}
+                            muted
+                            width="100%"
+                            height="100%"
+                            style={{
+                              borderRadius: "8px",
+                              display: isPlaying ? "block" : "none",
+                            }}
+                          />
+                        ) : (
+                          <img
+                            src="./BannerFilesIcon.svg"
+                            alt="files icon"
+                            onClick={handleIconClickVideo}
+                            style={{
+                              cursor: "pointer",
+                              marginTop: "50px",
+                              width: "150%",
+                            }}
+                          />
+                        )}
+                        <input
+                          type="file"
+                          accept="video/*"
+                          ref={videoFileInputRef}
+                          style={{ display: "none" }}
+                          onChange={(e) => handleFileSelected(e, "video")}
+                        />
+                      </>
                     )}
-                    <input
-                      type="file"
-                      accept="video/*"
-                      ref={videoFileInputRef}
-                      style={{ display: "none" }}
-                      onChange={(e) => handleFileSelected(e, "video")}
-                    />
                   </Col>
                   <Col>
                     <p className="text-muted text-center fs-6 mt-2">
@@ -278,37 +304,48 @@ export const CreateSpotlight = () => {
                   }}
                 >
                   <Col xs="auto">
-                    {/* <img src='./BannerFilesIcon.svg' alt='files icon' /> */}
-                    {imagePreview ? (
-                      <img
-                        src={imagePreview}
-                        alt="preview"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          borderRadius: "8px",
-                        }}
+                    {thumbnailLoading ? (
+                      <ClipLoader
+                        color={"#ffcc35"}
+                        loading={thumbnailLoading}
+                        size={100}
                       />
                     ) : (
-                      <img
-                        src="./BannerFilesIcon.svg"
-                        alt="files icon"
-                        onClick={handleIconClickthumbnail}
-                        style={{
-                          cursor: "pointer",
-                          marginTop: "50px",
-                          width: "150%",
-                        }}
-                      />
+                      <>
+                        {imagePreview ? (
+                          <img
+                            src={imagePreview}
+                            alt="preview"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              borderRadius: "8px",
+                            }}
+                          />
+                        ) : (
+                          <img
+                            src="./BannerFilesIcon.svg"
+                            alt="files icon"
+                            onClick={handleIconClickthumbnail}
+                            style={{
+                              cursor: "pointer",
+                              marginTop: "50px",
+                              width: "150%",
+                            }}
+                          />
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          ref={thumbnailFileInputRef}
+                          style={{ display: "none" }}
+                          onChange={(e) =>
+                            handleFileSelected(e, "videoThumbnail")
+                          }
+                        />
+                      </>
                     )}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      ref={thumbnailFileInputRef}
-                      style={{ display: "none" }}
-                      onChange={(e) => handleFileSelected(e, "videoThumbnail")}
-                    />
                   </Col>
                   <Col>
                     <p className="text-muted text-center fs-6 mt-2">
