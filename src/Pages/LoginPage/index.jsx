@@ -1,17 +1,17 @@
-
+import axios from 'axios';
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Row, Col } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
 
 import { baseurl } from '../../const';
 export const index = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [emailActive, setEmailActive] = useState(false);
+  const [passwordActive, setPasswordActive] = useState(false);
   const handleLogin = async () => {
     try {
       // Make a POST request to the login API
@@ -63,9 +63,12 @@ export const index = () => {
         <Col
           xl={6}
           className='d-flex justify-content-center align-items-center'
-          style={{ height: '98vh', overflowY: ' hidden' }}
+          style={{ height: '100vh', overflowY: ' hidden' }}
         >
-          <div className='w-100 d-flex flex-column justify-content-center align-items-center'>
+          <div
+            className='m-auto d-flex flex-column justify-content-center align-items-center'
+            style={{ width: '75%' }}
+          >
             <div className='d-flex flex-column justify-content-center align-items-center w-75'>
               <p
                 className='mt-5 mt-md-0'
@@ -77,11 +80,12 @@ export const index = () => {
               >
                 Braelo Power admin
               </p>
-              <div className='w-100 mt-5 mt-md-4'>
+              {/* <div className='w-100 mt-5 mt-md-4'>
                 <input
                   type='text'
                   placeholder='crissgermano@gmail.com |'
-                  className='w-100 border p-2 rounded-3'
+                  className='w-100  p-2 rounded-3'
+                  style={{ border: '1.22px solid #EFEFEF' }}
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                 />
@@ -90,11 +94,45 @@ export const index = () => {
                 <input
                   type='password'
                   placeholder='**** |'
-                  className='w-100 border p-2 rounded-3'
+                  style={{ border: ' 1.22px solid #1D96FF' }}
+                  className='w-100  p-2 rounded-3'
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                 />
+              </div> */}
+              <div className='w-100 mt-5 mt-md-4'>
+                <input
+                  type='text'
+                  placeholder='crissgermano@gmail.com |'
+                  className='w-100 p-2 rounded-3'
+                  style={{
+                    border: emailActive
+                      ? '1.22px solid #1D96FF'
+                      : '1.22px solid #EFEFEF',
+                  }}
+                  value={email}
+                  onFocus={() => setEmailActive(true)}
+                  onBlur={() => setEmailActive(false)}
+                  onChange={e => setEmail(e.target.value)}
+                />
               </div>
+              <div className='mt-5 mt-md-4 w-100'>
+                <input
+                  type='password'
+                  placeholder='**** |'
+                  style={{
+                    border: passwordActive
+                      ? '1.22px solid #1D96FF'
+                      : '1.22px solid #EFEFEF',
+                  }}
+                  className='w-100 p-2 rounded-3'
+                  value={password}
+                  onFocus={() => setPasswordActive(true)}
+                  onBlur={() => setPasswordActive(false)}
+                  onChange={e => setPassword(e.target.value)}
+                />
+              </div>
+
               <div className='mt-5 mt-md-4 w-100'>
                 {/* <Link to='/Dashboard'> */}
                 <button
@@ -109,7 +147,7 @@ export const index = () => {
           </div>
         </Col>
 
-        <Col xl={6} style={{ height: '98vh', overflowY: ' hidden' }}>
+        <Col xl={6} style={{ height: '100vh', overflowY: ' hidden' }}>
           <div
             className='d-flex justify-content-end align-items-center w-100 mt-5 mt-md-0'
             style={{
@@ -122,7 +160,7 @@ export const index = () => {
               style={{
                 borderRadius: '40px 0 0 40px',
                 backgroundColor: '#FFCC35',
-                padding: '0 0 0 35px' /* Adjust the padding as needed */,
+                padding: '0 0 0 35px',
                 maxWidth: '100%',
               }}
             >
@@ -131,25 +169,16 @@ export const index = () => {
                   borderRadius: '40px 0 0 40px',
                   backgroundColor: '#EE9E03',
                   overflowY: 'hidden',
-                  padding: '0 0 0 35px' /* Adjust the padding as needed */,
+                  padding: '0 0 0 35px',
                 }}
               >
-                <div
+                <img
+                  src='./image/Group 1000005200.png'
+                  alt=''
                   style={{
-                    borderRadius: '40px 0 0 40px',
-                    overflowY: 'hidden',
+                    height: '650px',
                   }}
-                >
-                  <img
-                    src='./image/Group 1000005200.png'
-                    alt=''
-                    style={{
-                      display: 'block',
-                      maxWidth: '100%',
-                      height: 'auto',
-                    }}
-                  />
-                </div>
+                />
               </div>
             </div>
           </div>

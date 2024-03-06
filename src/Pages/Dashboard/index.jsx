@@ -29,7 +29,7 @@ const Dashboard = () => {
               <NaveBar />
             </Row>
 
-            <Row>
+            <Row className='m-auto' style={{ width: '96%' }}>
               <Col md={8}>
                 <Row className='mt-4 mt-md-2'>
                   <DashBroadCard />
@@ -62,7 +62,7 @@ const Dashboard = () => {
                     </Link>
                   </Col>
                 </Row>
-                <Row>
+                <Row className='mt-5'>
                   <Col style={{ height: '300px' }}>
                     <LineCharts />
                   </Col>
@@ -71,7 +71,7 @@ const Dashboard = () => {
               <Col md={4} className='mt-md-2 mt-5'>
                 <Row
                   className=' rounded-4 border '
-                  style={{ backgroundColor: '#F8F9FA', width: '110%' }}
+                  style={{ backgroundColor: '#F8F9FA', width: '100%' }}
                 >
                   <HalfPieChart />
                 </Row>
