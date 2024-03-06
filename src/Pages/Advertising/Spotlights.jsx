@@ -62,7 +62,7 @@ const Spotlights = () => {
           {spotlightData &&
             spotlightData.map((spotlight) => (
               <Col key={spotlight._id} md={4}>
-                <SpotlightCard spotlight={spotlight} />
+                <SpotlightCard spotlight={spotlight}  />
               </Col>
             ))}
         </Row>

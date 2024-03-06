@@ -6,38 +6,53 @@ import Modal from "react-bootstrap/Modal";
 import Delete from "./Modal/Delet Modal/Delete.jsx";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { baseUrl } from "../../Constants/Constants.js";
 
-const BannerCard = ({ banner }) => {
+const BannerCard = ({ banner, onUpdate }) => {
   const [show, setShow] = useState(false);
+  const [selectedBannerId, setSelectedBannerId] = useState(null);
+  // console.log(banner._id);
+  const handleClose = () => {
+    setShow(false);
+    setSelectedBannerId(null);
+  };
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = (bannerId) => {
+    setShow(true);
+    setSelectedBannerId(bannerId);
+  };
 
-  const handleDelete = async () => {
+  // const handleDelete = async (bannerId) => {
+  //   try {
+  //     const apiUrl = `${baseUrl}/api/advertisement/delete-ad/${bannerId}?type=Banner`;
+
+  //     const authToken = localStorage.getItem("token");
+
+  //     const response = await axios.delete(apiUrl, {
+  //       headers: {
+  //         Authorization: `Bearer ${authToken}`,
+  //       },
+  //     });
+
+  //     console.log("Delete successful", response.data);
+  //     onUpdate();
+  //   } catch (error) {
+  //     console.error("Error deleting banner", error);
+  //   }
+  // };
+
+  const handleUpdate = async () => {
     try {
-      // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint for deleting the banner
-      const apiUrl = "YOUR_API_ENDPOINT";
-
-      // Replace 'YOUR_AUTH_TOKEN' with the actual authorization token
-      const authToken = "YOUR_AUTH_TOKEN";
-
-      const response = await axios.delete(apiUrl, {
+      const apiUrl = `${baseUrl}/api/advertisement/update-ad/${banner._id}`;
+      const response = await axios.put(apiUrl, banner, {
         headers: {
-          Authorization: `Bearer ${authToken}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
-      // Handle success (e.g., show a success message, update UI, etc.)
-      console.log("Delete successful", response.data);
-
-      // Close the modal or handle any other UI updates as needed
-      handleClose();
-    } catch (error) {
-      // Handle errors (e.g., show an error message, log the error, etc.)
-      console.error("Error deleting banner", error);
-
-      // Close the modal or handle any other UI updates as needed
-      handleClose();
+      console.log("Update Success", response.data);
+    } catch (err) {
+      console.error("Error", err);
     }
   };
 
@@ -73,7 +88,7 @@ const BannerCard = ({ banner }) => {
                 alt="Icon 1"
               />
             </Badge>
-            <Link to="/editBanner">
+            <Link to={`/editBanner/${banner._id}`}>
               <Badge
                 className="bg bg-secondary d-flex justify-content-center align-items-center "
                 style={{
@@ -87,6 +102,7 @@ const BannerCard = ({ banner }) => {
                   src="/Pen, Edit.svg"
                   style={{ width: "80%", height: "80%", objectFit: "contain" }}
                   alt="Icon 2"
+                  onClick={handleUpdate}
                 />
               </Badge>
             </Link>
@@ -107,21 +123,21 @@ const BannerCard = ({ banner }) => {
                 src="./Trash, Delete, Bin.svg"
                 style={{ width: "80%", height: "80%", objectFit: "contain" }}
                 alt="Icon 3"
-                onClick={handleDelete}
+                // onClick={() => handleDelete(banner._id)}
               />
             </Badge>
           </Col>
         </Row>
         <Card.Body>
           <Card.Title style={{ fontSize: "15px", color: "#fff" }}>
-          {banner.title}
+            {banner.title}
           </Card.Title>
           <Card.Text style={{ fontSize: "15px" }}>
             <p className="my-0" style={{ width: "50%", color: "#fff" }}>
-            {banner.description}
+              {banner.description}
             </p>
             <button className="cardbtn rounded-4 p-2 border-0 mt-3">
-            {banner.link || 'Advertise Now'}
+              {banner.link || "Advertise Now"}
             </button>
             <p
               // className='my-0'
@@ -139,7 +155,13 @@ const BannerCard = ({ banner }) => {
         </Card.Body>
       </Card>
       <Modal show={show} centered>
-        <Delete onHide={handleClose} />
+        <Delete
+          onHide={handleClose}
+          bannerId={selectedBannerId}
+          id={banner._id}
+          type="Banner"
+          onUpdate={onUpdate}
+        />
       </Modal>
     </>
   );

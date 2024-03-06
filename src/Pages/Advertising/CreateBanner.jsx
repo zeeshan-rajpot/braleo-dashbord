@@ -91,6 +91,7 @@ const CreateBanner = () => {
           ...bannerData,
           thumbnailPicture: imageUrl,
         });
+        
         const reader = new FileReader();
         reader.onload = () => {
           setImagePreview(reader.result);

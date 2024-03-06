@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Row } from 'react-bootstrap';
-import './chatstyle.css';
-
 export const Index = () => {
   const [selectedUser, setSelectedUser] = useState(0);
 

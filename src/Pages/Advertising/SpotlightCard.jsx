@@ -6,11 +6,40 @@ import "./spotlightCard.css";
 import Modal from "react-bootstrap/Modal";
 import Delete from "./Modal/Delet Modal/Delete.jsx";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { baseUrl } from "../../Constants/Constants.js";
+
 const SpotlightCard = ({ spotlight }) => {
   const [show, setShow] = useState(false);
+  const [selectedSpotlightId, setSelectedSpotlighId] = useState(null);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => {
+    setShow(false);
+    setSelectedSpotlighId(null);
+  };
+  const handleShow = (spotlightId) => {
+    setShow(true);
+    setSelectedSpotlighId(spotlightId);
+  };
+
+  const handleDelete = async (spotlightId) => {
+    try {
+      const apiUrl = `${baseUrl}/api/advertisement/delete-ad/${spotlightId}?type=Spotlight`;
+
+      const authToken = localStorage.getItem("token");
+
+      const response = await axios.delete(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      console.log("Delete Success", response.data);
+    } catch (err) {
+      console.error("Error", err);
+    }
+  };
+
   return (
     <>
       <Card
@@ -82,6 +111,9 @@ const SpotlightCard = ({ spotlight }) => {
                   src="./Trash, Delete, Bin.svg"
                   style={{ width: "80%", height: "80%", objectFit: "contain" }}
                   alt="Icon 3"
+                  onClick={() => {
+                    handleDelete(spotlight._id);
+                  }}
                 />
               </Badge>
             </Col>
@@ -131,7 +163,7 @@ const SpotlightCard = ({ spotlight }) => {
       </Card>
 
       <Modal show={show} centered>
-        <Delete onHide={handleClose} />
+        <Delete onHide={handleClose}  spotlightId={selectedSpotlightId}/>
       </Modal>
     </>
   );

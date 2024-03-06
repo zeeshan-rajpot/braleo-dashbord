@@ -33,6 +33,11 @@ const Banner = () => {
     fetchData();
   }, []);
 
+  const handleUpdate = async () => {
+    await fetchData(); // You need to define fetchData function outside of useEffect
+  };
+  console.log(bannerData);
+
   return (
     <>
       {loading ? (
@@ -48,7 +53,7 @@ const Banner = () => {
         <Row className="mt-3">
           {bannerData.map((banner) => (
             <Col key={banner._id} md={4}>
-              <BannerCard banner={banner} />
+              <BannerCard banner={banner} onUpdate={handleUpdate} />
             </Col>
           ))}
         </Row>
