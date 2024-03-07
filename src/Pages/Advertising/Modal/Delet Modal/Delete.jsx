@@ -3,8 +3,7 @@ import { Row, Col } from "react-bootstrap";
 import { baseUrl } from "../../../../Constants/Constants";
 import axios from "axios";
 
-export const Delete = ({ onHide, bannerId, id, type, onUpdate }) => {
-  console.log(onUpdate);
+export const Delete = ({ onHide, id, type, onUpdate }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   const handleConfirmation = async () => {
@@ -26,8 +25,6 @@ export const Delete = ({ onHide, bannerId, id, type, onUpdate }) => {
       console.error("Error deleting banner", error);
     }
   };
-
-  const handleDelete = async (bannerId) => {};
 
   return (
     <>

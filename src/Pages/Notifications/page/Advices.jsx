@@ -9,11 +9,8 @@ export const Advices = () => {
   const [advices, setAdvices] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    getAdvices();
-  }, []);
-  const getAdvices = () => {
-    axios
+  const getAdvices = async () => {
+    await axios
       .get(`${baseUrl}/api/advicenotification/get?type=Advice`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -31,6 +28,14 @@ export const Advices = () => {
       });
   };
 
+  useEffect(() => {
+    getAdvices();
+  }, []);
+
+  const handleUpdate = () => {
+    getAdvices();
+  };
+
   return (
     <div>
       {loading ? (
@@ -46,7 +51,7 @@ export const Advices = () => {
         <Row className="d-flex">
           {advices.map((advice) => (
             <Col lg={4} xl={4} xs={12} key={advice.id}>
-              <AdvicesCard advice={advice} />
+              <AdvicesCard advice={advice} onUpdate={handleUpdate} />
             </Col>
           ))}
         </Row>

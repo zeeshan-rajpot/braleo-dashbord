@@ -4,35 +4,39 @@ import { useEffect, useState } from "react";
 import { baseUrl } from "../../Constants/Constants";
 import { ToastContainer, toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
-import axios from "axios"; // Import axios here
+import axios from "axios";
 
 const Spotlights = () => {
   const [spotlightData, setSpotlightData] = useState();
   const [loading, setLoading] = useState(true);
 
+  const getSpotlights = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/advertisement/get-ads?type=Spotlight`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setSpotlightData(response.data.advertisements);
+    } catch (error) {
+      console.error("Error fetching spotlight data", error);
+      toast.error("Error While Completing Request");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const getSpotlights = async () => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/api/advertisement/get-ads?type=Spotlight`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-
-        setSpotlightData(response.data.advertisements);
-      } catch (error) {
-        console.error("Error fetching spotlight data", error);
-        toast.error("Error While Completing Request");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getSpotlights(); // Corrected function name
+    getSpotlights();
   }, []);
+
+  const handleUpdate = () => {
+    getSpotlights();
+  };
 
   return (
     <>
@@ -59,12 +63,11 @@ const Spotlights = () => {
         </div>
       ) : (
         <Row>
-          {spotlightData &&
-            spotlightData.map((spotlight) => (
-              <Col key={spotlight._id} md={4}>
-                <SpotlightCard spotlight={spotlight}  />
-              </Col>
-            ))}
+          {spotlightData.map((spotlight) => (
+            <Col key={spotlight._id} md={4}>
+              <SpotlightCard spotlight={spotlight} onUpdate={handleUpdate} />
+            </Col>
+          ))}
         </Row>
       )}
     </>

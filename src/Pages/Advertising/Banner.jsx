@@ -10,33 +10,32 @@ const Banner = () => {
   const [bannerData, setBannerData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/advertisement/get-ads?type=Banner`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setBannerData(response.data.advertisements);
+    } catch (error) {
+      console.error("Error fetching banner data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/api/advertisement/get-ads?type=Banner`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-
-        setBannerData(response.data.advertisements);
-      } catch (error) {
-        console.error("Error fetching banner data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
 
   const handleUpdate = async () => {
-    await fetchData(); // You need to define fetchData function outside of useEffect
+    await fetchData();
   };
-  console.log(bannerData);
 
   return (
     <>
