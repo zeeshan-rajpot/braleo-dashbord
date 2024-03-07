@@ -4,6 +4,7 @@ import SideBar from '../../../Components/SideBar.jsx';
 import NaveBar from '../../../Components/NaveBar.jsx';
 import AddNewPostBannerTab from '../Components/AddNewPostBannerTab.jsx';
 import AddNewPage from '../Components/AddNewPostPage.jsx';
+
 export const AddNewPost = () => {
   return (
     <div>

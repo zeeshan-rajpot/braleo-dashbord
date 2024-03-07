@@ -9,28 +9,32 @@ const Text = () => {
   const [textData, setTextData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/advertisement/get-ads?type=TextAd`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setTextData(response.data.advertisements);
+    } catch (error) {
+      console.error("Error fetching banner data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/api/advertisement/get-ads?type=TextAd`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-
-        setTextData(response.data.advertisements);
-      } catch (error) {
-        console.error("Error fetching banner data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
+
+  const handleUpdate = async () => {
+    await fetchData();
+  };
 
   return (
     <>
@@ -48,7 +52,7 @@ const Text = () => {
         <Row>
           {textData.map((text) => (
             <Col key={text._id} md={4}>
-              <TextCard text={text} />
+              <TextCard text={text} onUpdate={handleUpdate} />
             </Col>
           ))}
         </Row>

@@ -37,8 +37,8 @@ export const AdvicesCard = ({ advice }) => {
           <p className="text-white  p-2 pb-4">{advice.description}</p>
         </div>
       </div>
-      <Modal show={show}>
-        <Delete onHide={handleClose} />
+      <Modal show={show} centered>
+        <Delete  onHide={handleClose} />
       </Modal>
     </div>
   );

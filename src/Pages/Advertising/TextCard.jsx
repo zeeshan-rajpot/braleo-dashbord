@@ -3,7 +3,8 @@ import { Col, Row, Badge } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import Delete from "./Modal/Delet Modal/Delete.jsx";
 import { Link } from "react-router-dom";
-const TextCard = ({ text }) => {
+
+const TextCard = ({ text, onUpdate }) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -96,7 +97,12 @@ const TextCard = ({ text }) => {
         </div>
       </div>
       <Modal show={show} centered>
-        <Delete onHide={handleClose} />
+        <Delete
+          onHide={handleClose}
+          id={text._id}
+          type="TextAd"
+          onUpdate={onUpdate}
+        />
       </Modal>
     </>
   );

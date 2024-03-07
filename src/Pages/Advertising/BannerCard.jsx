@@ -5,56 +5,19 @@ import Badge from "react-bootstrap/Badge";
 import Modal from "react-bootstrap/Modal";
 import Delete from "./Modal/Delet Modal/Delete.jsx";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { baseUrl } from "../../Constants/Constants.js";
+
 
 const BannerCard = ({ banner, onUpdate }) => {
   const [show, setShow] = useState(false);
-  const [selectedBannerId, setSelectedBannerId] = useState(null);
-  // console.log(banner._id);
   const handleClose = () => {
     setShow(false);
-    setSelectedBannerId(null);
   };
 
-  const handleShow = (bannerId) => {
+  const handleShow = () => {
     setShow(true);
-    setSelectedBannerId(bannerId);
   };
 
-  // const handleDelete = async (bannerId) => {
-  //   try {
-  //     const apiUrl = `${baseUrl}/api/advertisement/delete-ad/${bannerId}?type=Banner`;
-
-  //     const authToken = localStorage.getItem("token");
-
-  //     const response = await axios.delete(apiUrl, {
-  //       headers: {
-  //         Authorization: `Bearer ${authToken}`,
-  //       },
-  //     });
-
-  //     console.log("Delete successful", response.data);
-  //     onUpdate();
-  //   } catch (error) {
-  //     console.error("Error deleting banner", error);
-  //   }
-  // };
-
-  const handleUpdate = async () => {
-    try {
-      const apiUrl = `${baseUrl}/api/advertisement/update-ad/${banner._id}`;
-      const response = await axios.put(apiUrl, banner, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      console.log("Update Success", response.data);
-    } catch (err) {
-      console.error("Error", err);
-    }
-  };
+ 
 
   return (
     <>
@@ -88,7 +51,7 @@ const BannerCard = ({ banner, onUpdate }) => {
                 alt="Icon 1"
               />
             </Badge>
-            <Link to={`/editBanner/${banner._id}`}>
+            <Link to={`/editBanner`}>
               <Badge
                 className="bg bg-secondary d-flex justify-content-center align-items-center "
                 style={{
@@ -102,7 +65,6 @@ const BannerCard = ({ banner, onUpdate }) => {
                   src="/Pen, Edit.svg"
                   style={{ width: "80%", height: "80%", objectFit: "contain" }}
                   alt="Icon 2"
-                  onClick={handleUpdate}
                 />
               </Badge>
             </Link>
@@ -123,7 +85,6 @@ const BannerCard = ({ banner, onUpdate }) => {
                 src="./Trash, Delete, Bin.svg"
                 style={{ width: "80%", height: "80%", objectFit: "contain" }}
                 alt="Icon 3"
-                // onClick={() => handleDelete(banner._id)}
               />
             </Badge>
           </Col>
@@ -140,7 +101,6 @@ const BannerCard = ({ banner, onUpdate }) => {
               {banner.link || "Advertise Now"}
             </button>
             <p
-              // className='my-0'
               style={{
                 fontSize: "10px",
                 textAlign: "right",
@@ -157,7 +117,6 @@ const BannerCard = ({ banner, onUpdate }) => {
       <Modal show={show} centered>
         <Delete
           onHide={handleClose}
-          bannerId={selectedBannerId}
           id={banner._id}
           type="Banner"
           onUpdate={onUpdate}
