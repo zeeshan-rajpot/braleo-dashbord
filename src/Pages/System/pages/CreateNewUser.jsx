@@ -31,7 +31,7 @@ const CreateNewUser = () => {
 
   const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
-
+console.log(selectedFile)
     if (selectedFile) {
       setSelectedImage(URL.createObjectURL(selectedFile));
       setFormData((prevFormData) => ({
@@ -114,7 +114,7 @@ const CreateNewUser = () => {
     
     }
   };
-
+console.log(formData)
   return (
     <div>
       <ToastContainer

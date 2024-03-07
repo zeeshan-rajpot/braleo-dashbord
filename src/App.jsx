@@ -44,6 +44,7 @@ import EditUser from './Pages/System/pages/CreateUser.jsx';
 import EditIllustrations from './Pages/System/pages/CreateUser.jsx';
 import CreatenewPlan from './Pages/Plans/pages/createnewPlan.jsx';
 import CreatePlansUser from './Pages/Plans/pages/Createnewuser.jsx';
+import UpdateTextAdd from './Pages/UpdatePage/UpdateTextAd/index.jsx';
 
 function App() {
   return (
@@ -75,6 +76,9 @@ function App() {
         <Route path='/Editspotlight' element={<Editspotlight />} />
         <Route path='/NewSpotLight' element={<NewSpotLight />} />
         <Route path='/CreateTextAdd' element={<CreateTextAdd />} />
+     
+        {/* <Route path='/UpdateTextAdd' element={<UpdateTextAdd />} /> */}
+        
         <Route path='/EdittextAdd' element={<EdittextAdd />} />
         <Route path='/NewAdd' element={<NewAdd />} />
         <Route path='/CreateNewMessage' element={<CreateNewMessage />} />
