@@ -91,7 +91,7 @@ const CreateBanner = () => {
           ...bannerData,
           thumbnailPicture: imageUrl,
         });
-        
+
         const reader = new FileReader();
         reader.onload = () => {
           setImagePreview(reader.result);
@@ -267,7 +267,6 @@ const CreateBanner = () => {
                         color={"#ffcc35"}
                         loading={loading}
                         size={100}
-                        
                       />
                     ) : (
                       <>
@@ -334,15 +333,19 @@ const CreateBanner = () => {
                   </button>
                 </Col>
                 <Col>
-                  <button
-                    type="button"
-                    variant="primary"
-                    className="ms-2 w-100 rounded-3 p-2 border-0 text-white "
-                    style={{ backgroundColor: "#596068" }}
-                    onClick={handleNext}
-                  >
-                    Next
-                  </button>
+                  {loading ? (
+                    <ScaleLoader color={"#ffcc35"} loading={loading} />
+                  ) : (
+                    <button
+                      type="button"
+                      variant="primary"
+                      className="ms-2 w-100 rounded-3 p-2 border-0 text-white "
+                      style={{ backgroundColor: "#596068" }}
+                      onClick={handleNext}
+                    >
+                      Next
+                    </button>
+                  )}
                 </Col>
                 <div>
                   <Modal show={show} centered onHide={handleClose}>

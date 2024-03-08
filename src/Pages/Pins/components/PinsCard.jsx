@@ -1,14 +1,15 @@
-import React from 'react';
-import { useState } from 'react';
-import Card from 'react-bootstrap/Card';
-import { Link } from 'react-router-dom';
-import { Row, Col } from 'react-bootstrap';
-import Badge from 'react-bootstrap/Badge';
-import Modal from 'react-bootstrap/Modal';
-import PinsPreviewModal from '../components/PinsPreviewModal.jsx';
-import DelModalCard from '../components/DelModalCard.jsx';
-import './PinsCard.css';
-export const PinsCard = ({ backgroundImage, TitleP, ProfileImage }) => {
+import React from "react";
+import { useState } from "react";
+import Card from "react-bootstrap/Card";
+import { Link } from "react-router-dom";
+import { Row, Col } from "react-bootstrap";
+import Badge from "react-bootstrap/Badge";
+import Modal from "react-bootstrap/Modal";
+import PinsPreviewModal from "../components/PinsPreviewModal.jsx";
+import DelModalCard from "../components/DelModalCard.jsx";
+import "./PinsCard.css";
+
+export const PinsCard = ({  ProfileImage, pin }) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -22,55 +23,57 @@ export const PinsCard = ({ backgroundImage, TitleP, ProfileImage }) => {
   return (
     <div>
       <Card
-        className='text-left border-0 backgroundofCard mt-4'
+        className="text-left border-0 backgroundofCard mt-4"
         style={{
-          width: '100%',
-          height: '213.4px',
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: ' cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
+          width: "100%",
+          height: "213.4px",
+          backgroundImage: `url(${
+            pin.adThumbnail
+          })`,
+          backgroundSize: " cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
         }}
       >
-        <Row className='my-2'>
-          <Col className='d-flex justify-content-end me-3 '>
-            <img src='./PinsImages/Group 1000004492.svg' className='me-2' />
-            <Link to='/EditPins'>
-              <img src='./PinsImages/Group 1000004486.svg' className='me-2' />
+        <Row className="my-2">
+          <Col className="d-flex justify-content-end me-3 ">
+            <img src="./PinsImages/Group 1000004492.svg" className="me-2" />
+            <Link to="/EditPins">
+              <img src="./PinsImages/Group 1000004486.svg" className="me-2" />
             </Link>
             <img
-              src='./PinsImages/Group 1000004490.svg'
-              variant='primary'
+              src="./PinsImages/Group 1000004490.svg"
+              variant="primary"
               onClick={delhandleShow}
-              role='button'
+              role="button"
             />
           </Col>
         </Row>
-        <Card.Body role='button' variant='primary' onClick={handleShow}>
+        <Card.Body role="button" variant="primary" onClick={handleShow}>
           <Card.Title
-            className='ms-4'
+            className="ms-4"
             style={{
-              fontSize: '19.67px',
-              color: '#fff',
-              fontWeight: '600',
-              fontFamily: 'PlusJakartaSans-Bold',
-              width: '30%',
+              fontSize: "19.67px",
+              color: "#fff",
+              fontWeight: "600",
+              fontFamily: "PlusJakartaSans-Bold",
+              width: "30%",
             }}
           >
-            {TitleP}
+            {pin.name}
           </Card.Title>
           <Card.Text
-            className='d-flex justify-content-start  align-items-center mt-5'
+            className="d-flex justify-content-start  align-items-center mt-5"
             // style={{ fontSize: '15px' }}
           >
             <div>
               {/* <img src='./PinsImages/Rectangle 23835.svg' alt='' /> */}
-              <img src={ProfileImage} alt='' />
+              <img src={ProfileImage} alt="" />
             </div>
-            <div className='ms-2'>
+            <div className="ms-2">
               <p
-                className='my-0'
-                style={{ width: '60%', color: '#FFFFFF', fontSize: '9px' }}
+                className="my-0"
+                style={{ width: "60%", color: "#FFFFFF", fontSize: "9px" }}
               >
                 Created at 4:33pm by @crissgermano Saturday 23 September 2023 -
                 Florida Miami
@@ -80,11 +83,11 @@ export const PinsCard = ({ backgroundImage, TitleP, ProfileImage }) => {
         </Card.Body>
       </Card>
       <Modal show={show} centered onHide={handleClose}>
-        <PinsPreviewModal />
+        <PinsPreviewModal pin={pin} />
       </Modal>
       {/* //Del Modal ------------------- */}
-      <Modal show={delshow}>
-        <DelModalCard onHide={delhandleClose} />{' '}
+      <Modal show={delshow} centered>
+        <DelModalCard onHide={delhandleClose} />{" "}
       </Modal>
     </div>
   );

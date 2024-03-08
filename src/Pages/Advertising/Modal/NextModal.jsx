@@ -5,10 +5,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { baseUrl } from "../../../Constants/Constants.js";
 import axios from "axios";
+import { ScaleLoader } from "react-spinners";
+
 
 const NextModal = ({ onHide, data: bannerData }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [errorOccurred, setErrorOccurred] = useState(false);
+  
 
   const handleConfirmation = async (data) => {
     try {
