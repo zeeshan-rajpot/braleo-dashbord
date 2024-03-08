@@ -12,7 +12,7 @@ export const PinsPreviewModal = ({ pin }) => {
         borderRadius: "12px 12px 12px 12px ",
       }}
     >
-      <PinsModal />
+      <PinsModal Images={pin.adPictures} />
 
       <Row className="d-flex justify-content-between align-items-center mt-5 m-auto ">
         <Col xl={4} className="mt-4">

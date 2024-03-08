@@ -3,9 +3,11 @@ import { Row, Col } from "react-bootstrap";
 import AdsCard from "../components/AdsCard.jsx";
 import axios from "axios";
 import { baseUrl } from "../../../Constants/Constants.js";
+import { ClipLoader } from "react-spinners";
 
 export const Ads = () => {
   const [bannerData, setBannerData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getBannerAds = async () => {
@@ -22,6 +24,8 @@ export const Ads = () => {
         setBannerData(response.data.advertisements);
       } catch (error) {
         console.error("Error fetching banner data", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -30,13 +34,24 @@ export const Ads = () => {
 
   return (
     <div>
-      <Row>
-        {bannerData.map((banner) => (
-          <Col key={banner._id} xl={4}>
-            <AdsCard banner={banner} />
-          </Col>
-        ))}
-      </Row>
+      {loading ? (
+        <div
+          className="d-flex justify-content-center   align-items-center  "
+          style={{
+            height: "70vh",
+          }}
+        >
+          <ClipLoader color={"#ffcc35"} loading={loading} size={200} />
+        </div>
+      ) : (
+        <Row>
+          {bannerData.map((banner) => (
+            <Col key={banner._id} xl={4}>
+              <AdsCard banner={banner} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </div>
   );
 };

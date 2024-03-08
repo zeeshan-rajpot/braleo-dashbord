@@ -7,7 +7,6 @@ import Modal from "react-bootstrap/Modal";
 import Delete from "./Modal/Delet Modal/Delete.jsx";
 import { Link } from "react-router-dom";
 
-
 const SpotlightCard = ({ spotlight, onUpdate }) => {
   const [show, setShow] = useState(false);
 
@@ -17,7 +16,6 @@ const SpotlightCard = ({ spotlight, onUpdate }) => {
   const handleShow = () => {
     setShow(true);
   };
-
 
   return (
     <>
@@ -90,7 +88,6 @@ const SpotlightCard = ({ spotlight, onUpdate }) => {
                   src="./Trash, Delete, Bin.svg"
                   style={{ width: "80%", height: "80%", objectFit: "contain" }}
                   alt="Icon 3"
-                 
                 />
               </Badge>
             </Col>
@@ -140,9 +137,12 @@ const SpotlightCard = ({ spotlight, onUpdate }) => {
       </Card>
 
       <Modal show={show} centered>
-        <Delete onHide={handleClose}  id={spotlight._id}
-          type="Spotlight"           onUpdate={onUpdate}
-          />
+        <Delete
+          onHide={handleClose}
+          id={spotlight._id}
+          type="Spotlight"
+          onUpdate={onUpdate}
+        />
       </Modal>
     </>
   );
