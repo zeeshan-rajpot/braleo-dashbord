@@ -19,10 +19,10 @@ const Archive = () => {
           <Row>
             <NaveBar />
           </Row>
-          <Row>
+          <Row  className='spaceadjust'>
             <BannerTab />
           </Row>
-          <Row>
+          <Row  className='spaceadjust'>
             <TabBar />
           </Row>
         </Col>

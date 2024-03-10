@@ -21,10 +21,10 @@ const index = () => {
             <Row>
               <NaveBar />
             </Row>
-            <Row>
+            <Row  className='spaceadjust'>
               <BannerTab activeBtn="newMessage" />
             </Row>
-            <Row>
+            <Row  className='spaceadjust'>
               <TabBar />
             </Row>
           </Col>

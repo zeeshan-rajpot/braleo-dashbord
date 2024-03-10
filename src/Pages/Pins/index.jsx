@@ -20,10 +20,10 @@ const Pins = () => {
             <Row>
               <NaveBar />
             </Row>
-            <Row>
+            <Row className='spaceadjust'>
               <BannerTab />
             </Row>
-            <Row className='m-0 m-md-3'>
+            <Row className='m-0 m-md-3 spaceadjust'>
               <Col xl={4}>
                 <PinsCard
                   backgroundImage='./PinsImages/Rectangle 101.png'

@@ -1,139 +1,96 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { Col, Row } from 'react-bootstrap';
 
-const SemiCircleChart = () => {
-  const data = [
-    {
-      title: 'Business subscriptions',
-      value: '56',
-      dotColor: '#049B1C',
-      outerdotColor: '#D4D7DA',
+export const SemiCircleChart = () => {
+  const chartOptions = {
+    labels: [
+      'Business subscriptions',
+      'Flat subscriptions',
+      'Yellow subscriptions',
+      'Canceled subscriptions',
+      'Pending subscriptions',
+    ],
+    colors: ['#049B1C', '#1659DB', '#F2A40C', '#FF0000', '#B4BEC8'],
+    bgcolors: ['#D4D7DA', '#B0C6F0', '#F6DEAE', '#FAA9AA', '#E2E6EA'],
+    dataLabels: {
+      enabled: false,
     },
-    {
-      title: 'Flat subscriptions',
-      value: '36',
-      dotColor: '#1659DB',
-      outerdotColor: '#B0C6F0',
+    legend: {
+      show: false,
     },
-    {
-      title: 'Yellow subscriptions',
-      value: '46',
-      dotColor: '#F2A40C',
-      outerdotColor: '#F6DEAE',
-    },
-    {
-      title: 'Canceled subscriptions',
-      value: '30',
-      dotColor: '#FF5733',
-      outerdotColor: '#FAA9AA',
-    },
-    {
-      title: 'Pending subscriptions',
-      value: '30',
-      dotColor: '#78828A',
-      outerdotColor: '#E2E6EA',
-    },
-    // Add more data objects as needed
-  ];
-  const chartData = {
-    series: [56, 47, 48, 38, 54],
-    options: {
-      chart: {
-        type: 'donut',
-        width: '100%',
-      },
-      colors: ['#049B1C', '#1659DB', '#F2A40C', '#FF0000', '#B4BEC8'],
-      dataLabels: {
-        enabled: false,
-      },
-      legend: {
-        show: false,
-      },
-      plotOptions: {
-        pie: {
-          startAngle: -90,
-          endAngle: 90,
-          donut: {
-            size: '70%',
-          },
-        },
-      },
-      labels: ['Business', 'Flat', 'Yellow', 'Canceled', 'Pending'],
-      tooltip: {
-        enabled: true,
-        y: {
-          formatter: function (val) {
-            return val;
-          },
-        },
+    plotOptions: {
+      pie: {
+        startAngle: -90,
+        endAngle: 90,
       },
     },
   };
 
+  const chartData = [56, 47, 48, 37, 54];
+
+  const totalSubscriptions = chartData.reduce(
+    (total, value) => total + value,
+    0
+  );
+
+  const [selectedLabel, setSelectedLabel] = useState(null);
+
+  const handleRadioChange = label => {
+    setSelectedLabel(label);
+  };
+
   return (
-    <div className='d-flex flex-column justify-content-center align-items-center '>
-      <div>
+    <div className='d-flex flex-column justify-content-start align-items-start'>
+      <div className='chart-container'>
         <ReactApexChart
-          options={chartData.options}
-          series={chartData.series}
+          options={chartOptions}
+          series={chartData}
           type='donut'
         />
+        <div className='chart-text'>
+          <p className='total-subscriptions-text'>Total Subscriptions</p>
+          <p className='total-subscriptions-value'>{totalSubscriptions}</p>
+        </div>
       </div>
-      {data.map((item, index) => (
-        <Row key={index} className='mt-2'>
-          <Col className='d-flex align-items-center' xs='auto'>
-            <div
-              className='d-flex align-items-start justify-content-start  me-3'
-              style={{ width: '20px' }}
-            >
-              <div
-                className='d-flex justify-content-center align-items-center'
-                style={{
-                  backgroundColor: item.outerdotColor,
-                  width: '12.86px',
-                  height: '12.86px',
-                  borderRadius: '8px',
-                }}
-              >
+      <div className='d-flex flex-column align-items-start'>
+        {chartOptions.labels.map((label, index) => (
+          <div key={index} className='d-flex flex-column align-items-start'>
+            <label className='radio-label d-flex justify-content-center align-items-center'>
+              <>
                 <div
+                  className='me-3  d-flex justify-content-center align-items-center '
                   style={{
-                    backgroundColor: item.dotColor,
-                    width: '6.43px',
-                    height: '6.43px',
-                    borderRadius: '8px',
+                    backgroundColor: chartOptions.bgcolors[index],
+                    borderRadius: '50%',
+                    width: '12.86px',
+                    height: '12.86px',
+                    boxShadow: chartOptions.colors[index],
                   }}
-                ></div>
+                >
+                  <div
+                    style={{
+                      backgroundColor: chartOptions.colors[index],
+                      borderRadius: '50%',
+                      width: '6.43px',
+                      height: '6.43px',
+                      boxShadow: chartOptions.colors[index],
+                    }}
+                  ></div>
+                </div>
+              </>
+
+              <div className='my-1 text-muted d-flex justify-content-between align-items-center '>
+                <div className='my-1 text-muted '>
+                  <p>{label}</p>
+                </div>
+                <div className='my-1 ms-5 d-flex flex-column justify-content-start align-items-start '>
+                  <p>{chartData[index]}</p>
+                </div>
               </div>
-
-            </div>
-
-            <p
-              className='m-0'
-              style={{
-                fontSize: '12.86px',
-                fontWeight: '500',
-                color: '#000000',
-              }}
-            >
-              {item.title}:
-            </p>
-          </Col>
-          <Col>
-            <div>
-              <p
-                style={{
-                  fontSize: '12.86px',
-                  fontWeight: '600',
-                  color: '#75818D',
-                }}
-              >
-                {item.value}
-              </p>
-            </div>
-          </Col>
-        </Row>
-      ))}
+            </label>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -20,10 +20,10 @@ const News = () => {
             <Row>
               <NaveBar />
             </Row>
-            <Row>
+            <Row  className='spaceadjust'>
               <BannerTab />
             </Row>
-            <Row>
+            <Row  className='spaceadjust'>
               <NewsTabBar />
             </Row>
           </Col>

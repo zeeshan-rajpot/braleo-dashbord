@@ -34,7 +34,6 @@ const BannerTab = props => {
               <NavDropdown
                 title='Filter by time'
                 id='multi-list-dropdown'
-                style={{ height: '' }}
                 className='w-100 p-2 border text-muted fs-6 rounded-3 bg-white'
               >
                 {/* Time filters */}
@@ -51,6 +50,7 @@ const BannerTab = props => {
                     Spotlight
                   </NavDropdown.Item>
                 </NavDropdown>
+
                 {/* User filters */}
                 <NavDropdown title='Filter by user' id='our-pick-2-dropdown'>
                   <NavDropdown.Item href='#pick2-Ali Dev'>
@@ -76,6 +76,7 @@ const BannerTab = props => {
                     Mount Everest, Nepal/Tibet
                   </NavDropdown.Item>
                 </NavDropdown>
+
                 {/* State filters */}
                 <NavDropdown title='Filter by state' id='our-pick-4-dropdown'>
                   <NavDropdown.Item href='#pick4-2021'>
@@ -86,6 +87,7 @@ const BannerTab = props => {
                   </NavDropdown.Item>
                   <NavDropdown.Item href='#pick4-2022'>Sicily</NavDropdown.Item>
                 </NavDropdown>
+
                 {/* County filters */}
                 <NavDropdown title='Filter by county' id='our-pick-5-dropdown'>
                   <NavDropdown.Item href='#pick5-2021'>
@@ -99,22 +101,20 @@ const BannerTab = props => {
                   </NavDropdown.Item>
                 </NavDropdown>
 
-                <Row className='my-5'>
-                  <Col xl={3}></Col>
-                  <Col xl={4} xs={6}>
+                {/* Clean Filter buttons */}
+                <Row className='my-3'>
+                  <Col xs={12}>
                     <button
-                      className='border-0 w-100 p-2 rounded-3 me-5'
+                      className='border-0 w-100 p-2 rounded-3 me-2'
                       style={{ backgroundColor: '#E0E3E7', color: '#868E96' }}
                     >
-                      Clean Filter
+                      Clean Filters
                     </button>
-                  </Col>
-                  <Col xl={4} xs={6}>
                     <button
-                      className='border-0 w-100 p-2 rounded-3 text-white me-4'
+                      className='border-0 w-100 p-2 rounded-3 text-white'
                       style={{ backgroundColor: '#596068' }}
                     >
-                      Clean Filter
+                      Apply Filters
                     </button>
                   </Col>
                 </Row>

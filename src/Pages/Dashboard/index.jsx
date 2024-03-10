@@ -29,7 +29,7 @@ const Dashboard = () => {
               <NaveBar />
             </Row>
 
-            <Row className='m-auto' style={{ width: '96%' }}>
+            <Row className='spaceadjust'>
               <Col md={8}>
                 <Row className='mt-4 mt-md-2'>
                   <DashBroadCard />

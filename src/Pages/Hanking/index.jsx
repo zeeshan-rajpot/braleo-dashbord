@@ -25,10 +25,10 @@ export const index = () => {
             <Row>
               <NaveBar />
             </Row>
-            <Row>
+            <Row  className='spaceadjust'>
               <BannerTab />
             </Row>
-            <Row>
+            <Row  className='spaceadjust'>
               <TabBarr />
             </Row>
           </Col>

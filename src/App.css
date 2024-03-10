@@ -11,6 +11,15 @@ p {
   margin-bottom: 0;
 }
 
+
+
+.spaceadjust {
+  width: 96%;
+  margin: auto;
+}
+
+
+
 body {
   background-color: #fff !important;
   overflow-y: hidden;
@@ -43,9 +52,8 @@ body {
 }
 
 .chart-text {
-  margin-top: -140px;
+  margin-top: -150px;
   font-size: 11px;
-  margin-left: -70px;
 }
 
 

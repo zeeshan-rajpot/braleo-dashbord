@@ -21,7 +21,7 @@ const Advertising = () => {
             <Row>
               <NaveBar />
             </Row>
-            <Row className='m-auto' style={{ width: '85%' }}>
+            <Row className='spaceadjust'>
               <BannerTab />
             </Row>
           </Col>

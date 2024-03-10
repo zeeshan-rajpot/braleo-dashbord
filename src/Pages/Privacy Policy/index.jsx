@@ -20,10 +20,10 @@ const PrivacyPolicy = () => {
             <Row>
               <NaveBar />
             </Row>
-            <Row>
+            <Row className='spaceadjust'>
               <BannerTab />
             </Row>
-            <Row className='m-0 m-md-3'>
+            <Row className='m-0 m-md-3 spaceadjust'>
               <PrivacyPolicyPage />
             </Row>
           </Col>
