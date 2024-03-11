@@ -21,7 +21,7 @@ import PrivacyPolicy from './Pages/Privacy Policy/index';
 import AddBanner from './Pages/Add Banner';
 import CreateBanner from './Pages/Advertising/CreateBanner.jsx';
 import NewBanner from './Pages/Advertising/CreateBanner.jsx';
-import EditBanner from './Pages/Advertising/CreateBanner.jsx';
+import EditBanner from './Pages/Advertising/UpdatePages/EditBanner.jsx';
 
 import AdvertisingPage from './Pages/Advertising/Advertising.jsx';
 import CreateSpotlight from './Pages/Advertising/createSpotlight.jsx';
@@ -70,7 +70,7 @@ function App() {
         <Route path='/CreateBanner' element={<CreateBanner />} />
         <Route path='/NewBanner' element={<NewBanner />} />
         <Route path='/AdvertisingPage' element={<AdvertisingPage />} />
-        <Route path='/EditBanner' element={<EditBanner />} />
+        <Route path='/EditBanner/:id' element={<EditBanner />} />
         <Route path='/CreateSpotlight' element={<CreateSpotlight />} />
         <Route path='/Editspotlight' element={<Editspotlight />} />
         <Route path='/NewSpotLight' element={<NewSpotLight />} />
