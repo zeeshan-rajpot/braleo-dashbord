@@ -1,124 +1,139 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import SideBar from "../../Components/SideBar.jsx";
-import NaveBar from "../../Components/NaveBar.jsx";
-import BannerTab from "./BannerTab";
-import ModalCard from "./Modal/NextModal.jsx";
+import SideBar from "../../../Components/SideBar.jsx";
+import NaveBar from "../../../Components/NaveBar.jsx";
+import BannerTab from "../BannerTab";
+import ModalCard from "../Modal/NextModal.jsx";
 import Modal from "react-bootstrap/Modal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
+import { baseUrl } from "../../../Constants/Constants.js";
+import { useParams } from "react-router";
 
-
-const CreateBanner = () => {
-
+const EditBanner = () => {
+  const { id } = useParams();
   const [keywordInput, setKeywordInput] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [errorOccurred, setErrorOccurred] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
-
   const [bannerData, setBannerData] = useState({
-    type: "Banner",
-    title: "",
-    link: "",
-    description: "",
-    keywords: [
-      "Pub",
-      "Restaurant",
-      "Beauty Salon",
-      "Bar",
-      "DJ",
-      "Coffeshop",
-      "Bakery",
-      "Language School",
-      "Technical Course ",
-      "Barbershop",
-      "Party Room",
-      "Studio",
-    ],
-    listingType: "Premium",
-    thumbnailPicture: "",
+    keywords: [],
   });
 
   const addKeyword = () => {
     if (keywordInput.trim() !== "") {
-      setBannerData({
-        ...bannerData,
-        keywords: [...bannerData.keywords, keywordInput],
-      });
+      setBannerData((prevData) => ({
+        ...prevData,
+        keywords: [...prevData.keywords, keywordInput],
+      }));
       setKeywordInput("");
     }
   };
 
   const removeKeyword = (index) => {
-    const updatedKeywords = [...bannerData.keywords];
-    updatedKeywords.splice(index, 1);
-    setBannerData({ ...bannerData, keywords: updatedKeywords });
+    setBannerData((prevData) => {
+      const updatedKeywords = [...prevData.keywords];
+      updatedKeywords.splice(index, 1);
+      return {
+        ...prevData,
+        keywords: updatedKeywords,
+      };
+    });
   };
 
   const fileInputRef = useRef(null);
 
   const handleIconClick = () => {
-    // Trigger the file input when the icon is clicked
     fileInputRef.current.click();
   };
 
-  const handleFileSelected = async (e) => {
-    setLoading(true);
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-      try {
-        // Create a FormData object to send the file
-        const formData = new FormData();
-        formData.append("image", selectedFile);
-
-        // Use axios to upload the image to the image upload API
-        const uploadResponse = await axios.post(
-          "https://braelo.azurewebsites.net/api/upload/images?containerName=listing",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        // Assuming the image upload API returns a URL in the response
-        const imageUrl = uploadResponse.data.url;
-
-        // Update the bannerData with the uploaded image URL
-        setBannerData({
-          ...bannerData,
-          thumbnailPicture: imageUrl,
-        });
-
-        const reader = new FileReader();
-        reader.onload = () => {
-          setImagePreview(reader.result);
-        };
-        reader.readAsDataURL(selectedFile);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        toast.error("Error uploading image");
-      } finally {
-        setLoading(false);
-      }
+  const handleFileSelected = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleNext = () => {
-    handleShow();
-  };
+  //   const handleNext = () => {
+  //     updateBannerAd();
+  //     setTimeout(() => {
+  //       window.location.href = "/AdvertisingPage"; // Replace with your actual route
+  //     }, 2000); // 2000 milliseconds (2 seconds)
+  //   };
 
   //------------------------- Modal---------------------------------------
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/advertisement/get-ad/${id}?type=Banner`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setBannerData(response?.data?.advertisement);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching banner data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const udpdatedData = {
+    type: "Banner",
+    action: "update",
+    updateFields: {
+      type: "Banner",
+      title: bannerData.title,
+      link: bannerData.link,
+      description: bannerData.description,
+      keywords: bannerData.keywords,
+      listingType: "Premium",
+      thumbnailPicture: bannerData.thumbnailPicture,
+    },
+  };
+
+  const updateBannerAd = async () => {
+    try {
+      const response = await axios.put(
+        `${baseUrl}/api/advertisement/update-ad/${id}`,
+        udpdatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data);
+      toast.success("Banner updated successfully!");
+    } catch (err) {
+      console.error("Error updating banner data", err);
+      toast.error("Error updating banner data");
+    }
+  };
+
+  console.log("data" + udpdatedData);
+
   return (
     <>
       <ToastContainer
@@ -151,7 +166,7 @@ const CreateBanner = () => {
               <BannerTab activeBtn="newBanner" />
             </Row>
             <Row>
-              <h4 className="mt-3 text-muted ">Create new banner</h4>
+              <h4 className="mt-3 text-muted ">Update banner</h4>
             </Row>
             <Row>
               <Col xl={6} xs={12}>
@@ -287,7 +302,7 @@ const CreateBanner = () => {
                           />
                         ) : (
                           <img
-                            src="./BannerFilesIcon.svg"
+                            src="/BannerFilesIcon.svg"
                             alt="files icon"
                             onClick={handleIconClick}
                             style={{
@@ -345,17 +360,13 @@ const CreateBanner = () => {
                       variant="primary"
                       className="ms-2 w-100 rounded-3 p-2 border-0 text-white "
                       style={{ backgroundColor: "#596068" }}
-                      onClick={handleNext}
+                      onClick={updateBannerAd}
                     >
-                      Next
+                      Update
                     </button>
                   )}
                 </Col>
-                <div>
-                  <Modal show={show} centered onHide={handleClose}>
-                    <ModalCard onHide={handleClose} data={bannerData} />
-                  </Modal>
-                </div>
+                
               </Col>
             </Row>
           </Col>
@@ -364,4 +375,4 @@ const CreateBanner = () => {
     </>
   );
 };
-export default CreateBanner;
+export default EditBanner;

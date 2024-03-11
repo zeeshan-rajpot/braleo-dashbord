@@ -5,7 +5,7 @@ import Badge from "react-bootstrap/Badge";
 import Modal from "react-bootstrap/Modal";
 import Delete from "./Modal/Delet Modal/Delete.jsx";
 import { Link } from "react-router-dom";
-
+import { useParams } from "react-router-dom";
 
 const BannerCard = ({ banner, onUpdate }) => {
   const [show, setShow] = useState(false);
@@ -17,7 +17,10 @@ const BannerCard = ({ banner, onUpdate }) => {
     setShow(true);
   };
 
- 
+  const { id } = useParams();
+
+  console.log(banner._id)
+
 
   return (
     <>
@@ -51,7 +54,7 @@ const BannerCard = ({ banner, onUpdate }) => {
                 alt="Icon 1"
               />
             </Badge>
-            <Link to={`/editBanner`}>
+            <Link to={`/editBanner/${banner._id}`}>
               <Badge
                 className="bg bg-secondary d-flex justify-content-center align-items-center "
                 style={{
