@@ -34,6 +34,10 @@ const   NaveBar = () => {
                 Criss Germano <br /> Administrator{" "}
                 <img src="/lock.svg" alt="" />{" "}
               </p>
+              {/* <p className=" ps-4 text-secondary fontmobile ">
+                Criss Germano <br /> Administrator{" "}
+                <img src="/lock.svg" alt="" />{" "}
+              </p> */}
             </div>
           </Col>
         </Row>
