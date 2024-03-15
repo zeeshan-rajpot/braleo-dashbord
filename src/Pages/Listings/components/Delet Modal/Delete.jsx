@@ -3,7 +3,7 @@ import { Row, Col } from "react-bootstrap";
 import { baseurl } from "../../../../const";
 import axios from "axios";
 
-export const Delete = ({ onHide, userId }) => {
+export const Delete = ({ onHide, userId, onUpdate }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   // const handleConfirmation = () => {
@@ -29,6 +29,7 @@ export const Delete = ({ onHide, userId }) => {
 
       // Set the state to true to show the confirmation message
       setIsConfirmed(true);
+      onUpdate();
     } catch (error) {
       console.error("Error deleting item:", error);
     }

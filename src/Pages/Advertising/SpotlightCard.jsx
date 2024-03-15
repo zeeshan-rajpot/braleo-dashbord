@@ -51,7 +51,7 @@ const SpotlightCard = ({ spotlight, onUpdate }) => {
                   alt="Icon 1"
                 />
               </Badge>
-              <Link to="/Editspotlight">
+              <Link to={`/Editspotlight/${spotlight._id}`}>
                 <Badge
                   className="bg bg-secondary d-flex justify-content-center align-items-center "
                   style={{

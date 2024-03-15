@@ -6,10 +6,10 @@ import { Row, Col } from "react-bootstrap";
 import Badge from "react-bootstrap/Badge";
 import Modal from "react-bootstrap/Modal";
 import PinsPreviewModal from "../components/PinsPreviewModal.jsx";
-import DelModalCard from "../components/DelModalCard.jsx";
+import DelModalCard from "../../Advertising/Modal/Delet Modal/Delete.jsx";
 import "./PinsCard.css";
 
-export const PinsCard = ({  ProfileImage, pin }) => {
+export const PinsCard = ({ ProfileImage, pin, onUpdate }) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -27,9 +27,7 @@ export const PinsCard = ({  ProfileImage, pin }) => {
         style={{
           width: "100%",
           height: "213.4px",
-          backgroundImage: `url(${
-            pin.adThumbnail
-          })`,
+          backgroundImage: `url(${pin.adThumbnail})`,
           backgroundSize: " cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -87,7 +85,7 @@ export const PinsCard = ({  ProfileImage, pin }) => {
       </Modal>
       {/* //Del Modal ------------------- */}
       <Modal show={delshow} centered>
-        <DelModalCard onHide={delhandleClose} />{" "}
+        <DelModalCard onHide={delhandleClose} id={pin._id} type="PinAd" /> onUpdate={onUpdate}
       </Modal>
     </div>
   );

@@ -50,24 +50,6 @@ const EditBanner = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileSelected = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  //   const handleNext = () => {
-  //     updateBannerAd();
-  //     setTimeout(() => {
-  //       window.location.href = "/AdvertisingPage"; // Replace with your actual route
-  //     }, 2000); // 2000 milliseconds (2 seconds)
-  //   };
-
   //------------------------- Modal---------------------------------------
   const [show, setShow] = useState(false);
 
@@ -112,6 +94,48 @@ const EditBanner = () => {
     },
   };
 
+  const handleFileSelected = async (e) => {
+    setLoading(true);
+    const file = e.target.files[0];
+
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        // Append the banner data to the formData
+        formData.append("bannerData", JSON.stringify(udpdatedData));
+
+        const uploadResponse = await axios.post(
+          `${baseUrl}/api/upload/images?containerName=listing`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        const imageUrl = uploadResponse.data.url;
+
+        setBannerData({
+          ...bannerData,
+          thumbnailPicture: imageUrl,
+        });
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        toast.error("Error uploading image");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   const updateBannerAd = async () => {
     try {
       const response = await axios.put(
@@ -131,8 +155,6 @@ const EditBanner = () => {
       toast.error("Error updating banner data");
     }
   };
-
-  console.log("data" + udpdatedData);
 
   return (
     <>
@@ -352,21 +374,16 @@ const EditBanner = () => {
                   </button>
                 </Col>
                 <Col>
-                  {loading ? (
-                    <ScaleLoader color={"#ffcc35"} loading={loading} />
-                  ) : (
-                    <button
-                      type="button"
-                      variant="primary"
-                      className="ms-2 w-100 rounded-3 p-2 border-0 text-white "
-                      style={{ backgroundColor: "#596068" }}
-                      onClick={updateBannerAd}
-                    >
-                      Update
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    variant="primary"
+                    className="ms-2 w-100 rounded-3 p-2 border-0 text-white "
+                    style={{ backgroundColor: "#596068" }}
+                    onClick={updateBannerAd}
+                  >
+                    Update
+                  </button>
                 </Col>
-                
               </Col>
             </Row>
           </Col>

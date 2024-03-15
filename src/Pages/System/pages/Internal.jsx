@@ -9,7 +9,7 @@ export const Internal = () => {
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchUserData = () => {
     // Retrieve token from localStorage
     const token = localStorage.getItem("token");
 
@@ -31,7 +31,16 @@ export const Internal = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  });
+
+  const handleUpdate = () => {
+    fetchUserData();
+  };
+
   return (
     <div>
       {loading ? (
@@ -44,7 +53,7 @@ export const Internal = () => {
           <ClipLoader color={"#ffcc35"} loading={loading} size={200} />
         </div>
       ) : (
-        <CardUser userData={userData} />
+        <CardUser userData={userData} onUpdate={handleUpdate}/>
       )}
     </div>
   );
