@@ -45,7 +45,7 @@ const TextCard = ({ text, onUpdate }) => {
                   alt="Icon 1"
                 />
               </Badge>
-              <Link to="/EdittextAdd">
+              <Link to={`/EdittextAdd/${text._id}`}>
                 <div
                   className="bg bg-secondary d-flex justify-content-center align-items-center "
                   style={{

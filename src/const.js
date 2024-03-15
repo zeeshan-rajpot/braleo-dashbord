@@ -1,1 +1,1 @@
-export const baseurl = "https://braelo.azurewebsites.net";
+export const baseurl = "http://localhost:5000";

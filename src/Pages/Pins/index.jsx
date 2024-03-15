@@ -74,9 +74,10 @@ const Pins = () => {
                   <Col xl={4} key={pin._id}>
                     <PinsCard
                       // backgroundImage="./PinsImages/Rectangle 101.png"
-                   
+
                       ProfileImage="./PinsImages/Rectangle 23835.svg"
                       pin={pin}
+                      onUpdate={handleUpdate}
                     />
                   </Col>
                 ))}

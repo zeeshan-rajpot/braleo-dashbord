@@ -4,7 +4,7 @@ import DelCard from "../../Listings/components/Delet Modal/Delete.jsx";
 import { Link } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 
-export const InternalUserCard = ({ userData }) => {
+export const InternalUserCard = ({ userData, onUpdate }) => {
   const [show, setShow] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
 
@@ -78,7 +78,7 @@ export const InternalUserCard = ({ userData }) => {
       </Row>
 
       <Modal show={show} centered onHide={handleClose}>
-        <DelCard onHide={handleClose} userId={selectedUserId} />
+        <DelCard onHide={handleClose} userId={selectedUserId}  onUpdate={onUpdate}/>
       </Modal>
     </>
   );

@@ -1,4 +1,4 @@
-const baseUrl = "https://braelo.azurewebsites.net";
+const baseUrl = "http://localhost:5000";
 export { baseUrl };
 
 // const handleDelete = async () => {
