@@ -13,7 +13,7 @@ import Plans from "./Pages/Plans/index";
 import Hanking from "./Pages/Hanking/index.jsx";
 import Pins from "./Pages/Pins/index";
 import CreateNewPins from "./Pages/Pins/pages/CreatePins.jsx";
-import EditPins from "./Pages/Pins/pages/CreatePins.jsx";
+import EditPins from "./Pages/Pins/UpdatePages/UpdatePins.jsx";
 import Support from "./Pages/Support/index";
 import System from "./Pages/System/index";
 import Archive from "./Pages/Archive/index";
@@ -39,11 +39,12 @@ import CreateListingPreview from "./Pages/Listings/page/CreateListingPreview.jsx
 import AddNewPost from "./Pages/News/page/AddNewPost.jsx";
 import NewPost from "./Pages/News/page/AddNewPost.jsx";
 import CreateNewUser from "./Pages/System/pages/CreateUser.jsx";
-import EditUser from "./Pages/System/pages/CreateUser.jsx";
+import EditUser from "./Pages/System/UpdatePages/EditUser.jsx";
 import EditIllustrations from "./Pages/System/pages/CreateUser.jsx";
 import CreatenewPlan from "./Pages/Plans/pages/createnewPlan.jsx";
 import CreatePlansUser from "./Pages/Plans/pages/Createnewuser.jsx";
-import UpdateTextAdd from "./Pages/UpdatePage/UpdateTextAd/index.jsx";
+import EditPlanUser from "./Pages/Plans/Update Planes/UpdatePlans.jsx";
+import EditPlans from "./Pages/Plans/Update Planes/UpdatePlantabbar.jsx";
 
 function App() {
   return (
@@ -61,7 +62,7 @@ function App() {
         <Route path="/Hanking" element={<Hanking />} />
         <Route path="/Pins" element={<Pins />} />
         <Route path="/CreateNewPins" element={<CreateNewPins />} />
-        <Route path="/EditPins" element={<EditPins />} />
+        <Route path="/EditPins/:id" element={<EditPins />} />
         <Route path="/System" element={<System />} />
         <Route path="/Archive" element={<Archive />} />
         <Route path="/Support" element={<Support />} />
@@ -70,7 +71,7 @@ function App() {
         <Route path="/CreateBanner" element={<CreateBanner />} />
         <Route path="/NewBanner" element={<NewBanner />} />
         <Route path="/AdvertisingPage" element={<AdvertisingPage />} />
-        <Route path="/EditBanner/:id" element={<Editspotlight />} />
+        <Route path="/EditBanner/:id" element={<EditBanner />} />
         <Route path="/CreateSpotlight" element={<CreateSpotlight />} />
         <Route path="/Editspotlight/:id" element={<Editspotlight />} />
         <Route path="/NewSpotLight" element={<NewSpotLight />} />
@@ -90,10 +91,14 @@ function App() {
         <Route path="/AddNewPost" element={<AddNewPost />} />
         <Route path="/NewPost" element={<NewPost />} />
         <Route path="/CreateNewUser" element={<CreateNewUser />} />
-        <Route path="/EditUser" element={<EditUser />} />
+        <Route path="/EditUser/:id" element={<EditUser />} />
+        {/* <Route path="/EditUser" element={<EditUser />} /> */}
+
         <Route path="/EditIllustrations" element={<EditIllustrations />} />
         <Route path="/CreatenewPlan" element={<CreatenewPlan />} />
         <Route path="/CreatePlansUser" element={<CreatePlansUser />} />
+        <Route path="/EditPlansUser" element={<EditPlanUser />} />
+        <Route path="/EditPlans/:id" element={<EditPlans />} />
       </Routes>
     </BrowserRouter>
   );

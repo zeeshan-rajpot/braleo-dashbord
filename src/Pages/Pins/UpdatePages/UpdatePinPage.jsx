@@ -1,46 +1,24 @@
-import React, { useState, useRef , useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
-import Modal from "react-bootstrap/Modal";
 import axios from "axios";
-import ConfrimModal from "../components/Success.jsx";
 import ClipLoader from "react-spinners/ClipLoader";
-import { ToastContainer, toast } from "react-toastify";
 import { baseurl } from "../../../const.js";
+import { useParams, useNavigate } from "react-router";
+import { ToastContainer, toast } from "react-toastify";
 
-export const PinsPage = () => {
+export const UpdatePinPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [thumnail, setThumnail] = useState("");
   const [keywordInput, setKeywordInput] = useState("");
   const [adpics, setAdpics] = useState([]);
-  const [keywords, setKeywords] = useState([
-    "Pub",
-    "Restaurant",
-    "Beauty Salon",
-    "Bar",
-    "DJ",
-    "Coffee Shop",
-    "Bakery",
-    "Language School",
-    "Technical Course",
-    "Barbershop",
-    "Party Room",
-    "Studio",
-  ]);
+  const [keywords, setKeywords] = useState("");
+  const [imagePreviews, setImagePreviews] = useState([]);
 
   const [pinData, setPinData] = useState({
-    type: "PinAd",
-    name: "",
-    description: "",
-    postalCode: "",
-    keywords: keywords,
-    location: "",
-    contact: "",
-    whatsapp: "",
-    facebook: "",
-    instagram: "",
-    adThumbnail: thumnail,
-    adPictures: adpics,
+    keywords: [],
   });
 
   const fileInputRef = useRef(null);
@@ -63,6 +41,7 @@ export const PinsPage = () => {
         `${baseurl}/api/upload/images?containerName=listing`,
         formData
       );
+      console.log("THUMNAIL Response:", response.data);
       setImagePreview(URL.createObjectURL(file));
       setThumnail(response.data.url);
 
@@ -79,38 +58,24 @@ export const PinsPage = () => {
 
   const addKeyword = () => {
     if (keywordInput.trim() !== "") {
-      setKeywords([...keywords, keywordInput]);
+      setPinData((prevData) => ({
+        ...prevData,
+        keywords: [...prevData.keywords, keywordInput],
+      }));
       setKeywordInput("");
     }
   };
 
   const removeKeyword = (index) => {
-    const updatedKeywords = [...keywords];
-    updatedKeywords.splice(index, 1);
-    setKeywords(updatedKeywords);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setPinData({
-      ...pinData,
-      [name]: value,
+    setPinData((prevData) => {
+      const updatedKeywords = [...prevData.keywords];
+      updatedKeywords.splice(index, 1);
+      return {
+        ...prevData,
+        keywords: updatedKeywords,
+      };
     });
   };
-
-  useEffect(() => {
-    setPinData((prevState) => ({
-      ...prevState,
-      keywords: keywords,
-    }));
-  }, [keywords]);
-
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const [imagePreviews, setImagePreviews] = useState([]);
 
   const handleImageChange = async (e, index) => {
     const file = e.target.files[0];
@@ -146,6 +111,7 @@ export const PinsPage = () => {
         `${baseurl}/api/upload/images?containerName=listing`,
         formData
       );
+      console.log("Image uploaded:", response.data.url);
 
       // Update adPics state with the new image URL
       setAdpics((prevState) => [...prevState, response.data.url]);
@@ -192,29 +158,103 @@ export const PinsPage = () => {
     ));
   };
 
-  const Postapi = async () => {
-    const token = localStorage.getItem("token");
-
+  const fetchData = async () => {
     try {
-      const response = await axios.post(
-        `${baseurl}/api/advertisement/new`,
-        pinData,
+      const response = await axios.get(
+        `${baseurl}/api/advertisement/get-ad/${id}?type=PinAd`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
 
-      console.log("POST API Response:", response.data);
-      handleShow(true);
+      setPinData(response.data.advertisement);
+      console.log(response.data);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error fetching banner data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const udpdatedData = {
+    type: "PinAd",
+    action: "update",
+    updateFields: {
+      type: "PinAd",
+      name: pinData.name,
+      postalCode: pinData.postalCode,
+      description: pinData.description,
+      keywords: pinData.keywords,
+      whatsapp: pinData.whatsapp,
+      contact: pinData.whatsapp,
+      facebook: pinData.facebook,
+      location: pinData.location,
+      instagram: pinData.instagram,
+      adThumbnail: thumnail,
+      adPictures: adpics,
+    },
+  };
+
+  // {
+  //   action: "update",
+  //   type: "PinAd",
+  //   name: pinData.name,
+  //   postalCode: pinData.postalCode,
+  //   description: pinData.description,
+  //   keywords: pinData.keywords,
+  //   whatsapp: pinData.whatsapp,
+  //   contact: pinData.whatsapp,
+  //   facebook: pinData.facebook,
+  //   location: pinData.location,
+  //   instagram: pinData.instagram,
+  //   adThumbnail: thumnail,
+  //   adPictures: adpics,
+  // };
+
+  const updatePinAd = async () => {
+    try {
+      const response = await axios.put(
+        `${baseurl}/api/advertisement/update-ad/${id}`,
+        udpdatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response.data);
+      toast.success("Pin updated successfully!");
+
+      setTimeout(() => {
+        navigate("/Dashboard");
+      }, 3000);
+    } catch (err) {
+      console.error("Error updating Pin data", err);
+      toast.error("Error updating Pin data");
+      console.log(udpdatedData);
     }
   };
 
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Row>
         <Row>
           <h2 className="text-muted pt-4">New Pin</h2>
@@ -225,8 +265,8 @@ export const PinsPage = () => {
             <input
               placeholder="Ali Dev store Dubai"
               className="border border-1 rounded-3 p-2 w-100 "
-              name="name"
-              onChange={handleChange}
+              value={pinData.name}
+              onChange={(e) => setPinData({ ...pinData, name: e.target.value })}
             />
           </div>
         </Row>
@@ -238,8 +278,10 @@ export const PinsPage = () => {
                 style={{ height: "150px" }}
                 placeholder="Get to know Legally and Co's services and ask your questions, Get to know Legally and Co's services and ask your questions, Get to know Legally and Co's services and ask your questions I"
                 className="border border-1 rounded-3 p-2 w-100 h-70"
-                name="description"
-                onChange={handleChange}
+                value={pinData.description}
+                onChange={(e) =>
+                  setPinData({ ...pinData, description: e.target.value })
+                }
               />
             </div>
           </Col>
@@ -270,22 +312,23 @@ export const PinsPage = () => {
                   className="d-flex flex-wrap"
                   style={{ height: "auto", width: "100%" }}
                 >
-                  {keywords.map((keyword, index) => (
-                    <div
-                      key={index}
-                      className="badge rounded-5 p-2 me-2 text-center mt-2"
-                      style={{
-                        backgroundColor: "#c4c8cc",
-                        color: "#fff",
-                        cursor: "pointer",
-                        width: "auto",
-                        height: "28px",
-                      }}
-                      onClick={() => removeKeyword(index)}
-                    >
-                      {keyword}
-                    </div>
-                  ))}
+                  {pinData.keywords &&
+                    pinData.keywords.map((keyword, index) => (
+                      <div
+                        key={index}
+                        className="badge rounded-5 bg-warning p-2 me-2 text-center mt-2"
+                        style={{
+                          backgroundColor: "rgba(254, 240, 203, 0.7)",
+                          color: "#A77C0E",
+                          cursor: "pointer",
+                          width: "auto",
+                          height: "28px",
+                        }}
+                        onClick={() => removeKeyword(index)}
+                      >
+                        {keyword}
+                      </div>
+                    ))}
                 </div>
               </div>
             </div>
@@ -298,8 +341,10 @@ export const PinsPage = () => {
               <input
                 placeholder="Immigration Paralegal Services"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="location"
-                onChange={handleChange}
+                value={pinData.location}
+                onChange={(e) =>
+                  setPinData({ ...pinData, location: e.target.value })
+                }
               />
             </div>
           </Col>
@@ -309,8 +354,10 @@ export const PinsPage = () => {
               <input
                 placeholder="SE1 7AB"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="postalCode"
-                onChange={handleChange}
+                value={pinData.postalCode}
+                onChange={(e) =>
+                  setPinData({ ...pinData, postalCode: e.target.value })
+                }
               />
             </div>
           </Col>
@@ -318,12 +365,14 @@ export const PinsPage = () => {
         <Row className="mt-4">
           <Col md={6} xs={12}>
             <div>
-              <label className="text-muted">Contact </label>
+              <label className="text-muted">Phone</label>
               <input
-                placeholder="+0000000000000"
+                placeholder="https://braelo.co/"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="contact"
-                onChange={handleChange}
+                value={pinData.contact}
+                onChange={(e) =>
+                  setPinData({ ...pinData, contact: e.target.value })
+                }
               />
             </div>
           </Col>
@@ -333,8 +382,10 @@ export const PinsPage = () => {
               <input
                 placeholder="https://wa.me/00000000"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="whatsapp"
-                onChange={handleChange}
+                value={pinData.whatsapp}
+                onChange={(e) =>
+                  setPinData({ ...pinData, whatsapp: e.target.value })
+                }
               />
             </div>
           </Col>
@@ -346,8 +397,10 @@ export const PinsPage = () => {
               <input
                 placeholder="fb.com/youraccount"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="facebook"
-                onChange={handleChange}
+                value={pinData.facebook}
+                onChange={(e) =>
+                  setPinData({ ...pinData, facebook: e.target.value })
+                }
               />
             </div>
           </Col>
@@ -357,8 +410,10 @@ export const PinsPage = () => {
               <input
                 placeholder="https://wa.me/00000000"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="instagram"
-                onChange={handleChange}
+                value={pinData.instagram}
+                onChange={(e) =>
+                  setPinData({ ...pinData, instagram: e.target.value })
+                }
               />
             </div>
           </Col>
@@ -445,7 +500,7 @@ export const PinsPage = () => {
                       className="delete-icon"
                       style={{ position: "absolute", top: "5px", right: "5px" }}
                     >
-                      <img src="./Delete, Disabled.svg" alt="Delete" />
+                      <img src="/Delete, Disabled.svg" alt="Delete" />
                     </div>
                     <img
                       src={imagePreviews[index]}
@@ -472,7 +527,7 @@ export const PinsPage = () => {
                       className="delete-icon"
                       style={{ position: "absolute", top: "5px", right: "5px" }}
                     >
-                      <img src="./Delete, Disabled.svg" alt="Delete" />
+                      <img src="/Delete, Disabled.svg" alt="Delete" />
                     </div>
                     <div
                       className="image-container"
@@ -481,7 +536,7 @@ export const PinsPage = () => {
                         backgroundPosition: "center",
                         width: "100%",
                         height: "100%",
-                        backgroundImage: `url('./rectangularIMAGEPNG.png')`,
+                        backgroundImage: `url('/rectangularIMAGEPNG.png')`,
                       }}
                     ></div>
                   </div>
@@ -512,21 +567,18 @@ export const PinsPage = () => {
               <button
                 type="button"
                 variant="primary"
-                onClick={Postapi}
                 className="ms-4 w-100 rounded-3 p-2 border-0 text-white "
                 style={{ backgroundColor: "#596068" }}
+                onClick={updatePinAd}
               >
-                Next
+                Update
               </button>
             </Col>
           </Col>
         </Row>
-        <Modal show={show} centered>
-          <ConfrimModal onHide={handleClose} />
-        </Modal>
       </Row>
     </div>
   );
 };
 
-export default PinsPage;
+export default UpdatePinPage;

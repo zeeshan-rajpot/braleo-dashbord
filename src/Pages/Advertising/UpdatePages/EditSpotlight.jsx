@@ -2,9 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import SideBar from "../../../Components/SideBar.jsx";
 import NaveBar from "../../../Components/NaveBar.jsx";
 import BannerTab from "../BannerTab.jsx";
-import Modal from "react-bootstrap/Modal";
-import AdvTabs from "../AdvTabs";
-import ModalCard from "../Modal/spotlight/next.jsx";
 import { Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { baseUrl } from "../../../Constants/Constants.js";
@@ -16,29 +13,18 @@ import { baseurl } from "../../../const.js";
 import { useNavigate } from "react-router";
 
 export const EditSpotlight = () => {
-
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const { id } = useParams();
   const videoFileInputRef = useRef(null);
   const thumbnailFileInputRef = useRef(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [videoPreview, setVideoPreview] = useState(null);
+  const [videoPreview, setVideoPreview] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [videoLoading, setVideoLoading] = useState(false);
   const [thumbnailLoading, setThumbnailLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const handleIconClickVideo = () => {
-    videoFileInputRef.current.click();
-  };
-  const handleIconClickthumbnail = () => {
-    thumbnailFileInputRef.current.click();
-  };
-
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [thumbnail, setThumbnail] = useState("");
+  const [video, setVideo] = useState("");
 
   const [spotlightData, setSpotlightData] = useState({
     type: "Spotlight",
@@ -49,107 +35,6 @@ export const EditSpotlight = () => {
     videoThumbnail: "",
     link: "",
   });
-
-  //   useEffect(() => {
-  //     const videoElement = document.getElementById("video-preview");
-
-  //     if (videoElement && videoPreview) {
-  //       videoElement.src = videoPreview;
-  //     }
-  //   }, [videoPreview]);
-
-  //   const handleFileSelected = (e, field) => {
-  //     const selectedFile = e.target.files[0];
-
-  //     if (field === "videoThumbnail") {
-  //       setFormData((prevData) => ({
-  //         ...prevData,
-  //         [field]: selectedFile,
-  //       }));
-
-  //       const reader = new FileReader();
-  //       reader.onload = () => {
-  //         setImagePreview(reader.result);
-  //       };
-  //       reader.readAsDataURL(selectedFile);
-  //     } else if (field === "video") {
-  //       setFormData((prevData) => ({
-  //         ...prevData,
-  //         [field]: selectedFile,
-  //       }));
-
-  //       const reader = new FileReader();
-  //       reader.onload = () => {
-  //         setVideoPreview(reader.result);
-  //         setIsPlaying(true); // Assuming the video is playing by default
-  //       };
-  //       reader.readAsDataURL(selectedFile);
-  //     }
-  //   };
-
-  //   const uploadVideo = async () => {
-  //     setVideoLoading(true);
-
-  //     const { video } = formData;
-
-  //     if (video) {
-  //       try {
-  //         const formData = new FormData();
-  //         formData.append("video", video);
-
-  //         const uploadResponse = await axios.post(
-  //           `https://braelo.azurewebsites.net/api/upload/videos?containerName=videos`,
-  //           formData,
-  //           {
-  //             headers: {
-  //               "Content-Type": "multipart/form-data",
-  //               Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //             },
-  //           }
-  //         );
-
-  //         return uploadResponse.data.url;
-  //       } catch (error) {
-  //         console.error("Error uploading video:", error);
-  //       } finally {
-  //         setVideoLoading(false);
-  //       }
-  //     }
-  //   };
-
-  //   const uploadThumbnail = async () => {
-  //     setThumbnailLoading(true);
-
-  //     const { videoThumbnail } = formData;
-
-  //     if (videoThumbnail) {
-  //       try {
-  //         const formData = new FormData();
-  //         formData.append("image", videoThumbnail);
-
-  //         const uploadResponse = await axios.post(
-  //           `https://braelo.azurewebsites.net/api/upload/images?containerName=listing`,
-  //           formData,
-  //           {
-  //             headers: {
-  //               "Content-Type": "multipart/form-data",
-  //               Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //             },
-  //           }
-  //         );
-
-  //         return uploadResponse.data.url;
-  //       } catch (error) {
-  //         console.error("Error uploading thumbnail:", error);
-  //       } finally {
-  //         setThumbnailLoading(false);
-  //       }
-  //     }
-  //   };
-
-  const handleNext = async () => {
-    handleShow();
-  };
 
   const fetchData = async () => {
     try {
@@ -162,10 +47,11 @@ export const EditSpotlight = () => {
         }
       );
 
-      setSpotlightData(response?.data?.advertisement);
+      setSpotlightData(response.data.advertisement);
       console.log(response.data);
     } catch (error) {
       console.error("Error fetching spotlight data", error);
+      toast.error("Error fetching spotlight data", error);
     } finally {
       setLoading(false);
     }
@@ -175,6 +61,79 @@ export const EditSpotlight = () => {
     fetchData();
   }, []);
 
+  const handleIconClickVideo = () => {
+    videoFileInputRef.current.click();
+  };
+  const handleIconClickthumbnail = () => {
+    thumbnailFileInputRef.current.click();
+  };
+
+  const handleFileSelected = (e, type) => {
+    if (type === "video") {
+      uploadVideo(e);
+    } else if (type === "videoThumbnail") {
+      uploadThumbnail(e);
+    }
+  };
+
+  const uploadVideo = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setVideoLoading(true);
+
+    const formData = new FormData();
+    formData.append("video", file);
+
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/upload/videos?containerName=videos`,
+        formData
+      );
+      console.log("Video Upload Response:", response.data);
+      setVideo(URL.createObjectURL(file));
+      setVideoPreview(URL.createObjectURL(file));
+
+      setSpotlightData((prevState) => ({
+        ...prevState,
+        video: response.data.url,
+      }));
+    } catch (error) {
+      console.error("Error uploading video:", error);
+    } finally {
+      setVideoLoading(false);
+    }
+  };
+
+  const uploadThumbnail = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setThumbnailLoading(true);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/upload/images?containerName=listing`,
+        formData
+      );
+      console.log("Thumbnail Response:", response.data);
+      setImagePreview(URL.createObjectURL(file));
+      setThumbnail(response.data.url);
+
+      setSpotlightData((prevState) => ({
+        ...prevState,
+        videoThumbnail: response.data.url,
+      }));
+    } catch (error) {
+      console.error("Error uploading thumbnail:", error);
+    } finally {
+      setThumbnailLoading(false);
+    }
+  };
+
   const UpdatedData = {
     type: "Spotlight",
     action: "update",
@@ -183,14 +142,13 @@ export const EditSpotlight = () => {
       title: spotlightData.title,
       price: spotlightData.price,
       category: "Entertainment",
-      video: "https://www.example.com/sample-video.mp4",
-      videoThumbnail: "https://www.example.com/sample-video.jpeg",
+      video: spotlightData.video,
+      videoThumbnail: spotlightData.videoThumbnail,
       link: spotlightData.link,
     },
   };
 
   const UpdateSpotlight = async () => {
-
     try {
       const response = await axios.put(
         `${baseurl}/api/advertisement/update-ad/${id}`,
@@ -202,9 +160,12 @@ export const EditSpotlight = () => {
           },
         }
       );
+      setSpotlightData("");
       console.log(response.data);
       toast.success("Spotlight updated successfully!");
-      Navigate("/AdvertisingPage")
+      setTimeout(() => {
+        navigate("/Dashboard");
+      }, 3000);
     } catch (err) {
       console.error("Error updating Spotlight data", err);
       toast.error("Error updating Spotlight data");

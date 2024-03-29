@@ -3,14 +3,13 @@ import { Container, Row, Col } from "react-bootstrap";
 import SideBar from "../../../Components/SideBar.jsx";
 import NaveBar from "../../../Components/NaveBar.jsx";
 import BannerTab from "../BannerTab";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import axios from "axios";
 import { baseurl } from "../../../const.js";
 import { ToastContainer, toast } from "react-toastify";
 const EditTextAds = () => {
   const { id } = useParams();
-  //------------------------- Modal---------------------------------------
-
+  const navigate = useNavigate();
 
   const [textData, setTextData] = useState({});
 
@@ -59,8 +58,12 @@ const EditTextAds = () => {
           },
         }
       );
+      setTextData("");
       console.log(response.data);
       toast.success("TextAd updated successfully!");
+      setTimeout(() => {
+        navigate("/Dashboard");
+      }, 3000);
     } catch (err) {
       console.error("Error updating banner data", err);
       toast.error("Error updating banner data");
@@ -69,6 +72,18 @@ const EditTextAds = () => {
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Container fluid className="  h-100">
         <Row>
           <Col

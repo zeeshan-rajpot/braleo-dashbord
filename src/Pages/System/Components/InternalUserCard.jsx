@@ -61,10 +61,10 @@ export const InternalUserCard = ({ userData, onUpdate }) => {
 
               <div className="m-auto w-50 d-flex justify-content-end align-items-end ">
                 <Link to={`/EditUser/${user._id}`}>
-                  <img src="./public/Systemiconpen.svg" alt="" />
+                  <img src="/Systemiconpen.svg" alt="" />
                 </Link>
                 <img
-                  src="./public/Systemicondel.svg"
+                  src="/Systemicondel.svg"
                   alt=""
                   role="button"
                   className="ms-4"

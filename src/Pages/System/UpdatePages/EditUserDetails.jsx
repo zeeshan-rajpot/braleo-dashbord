@@ -1,27 +1,18 @@
-import React, { useState, useRef } from "react";
-import { Row, Col, Modal } from "react-bootstrap";
+import React, { useState, useRef, useEffect } from "react";
+import { Row, Col } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import CongratulationCard from "../Components/Success.jsx";
 import { baseUrl } from "../../../Constants/Constants.js";
+import { useNavigate, useParams } from "react-router";
 
-const CreateNewUser = () => {
-  const [show, setShow] = useState(false);
-  const [data, setData] = useState({});
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    role: "",
-    profileImage: "",
-    password: "",
-  });
+const EditUser = () => {
+  const { id } = useParams();
+  const navigate = useNavigate;
+  const [formData, setFormData] = useState({});
   const [selectedImage, setSelectedImage] = useState(null);
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const handleImageClick = () => {
     if (fileInputRef.current) {
@@ -29,93 +20,88 @@ const CreateNewUser = () => {
     }
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const selectedFile = e.target.files[0];
-console.log(selectedFile)
-    if (selectedFile) {
-      setSelectedImage(URL.createObjectURL(selectedFile));
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        profileImage: selectedFile,
-      }));
-    }
-  };
+    if (!selectedFile) return;
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+    setLoading(true);
 
-  const handleSave = async () => {
+    const formData = new FormData();
+    formData.append("image", selectedFile);
+
     try {
-      // First, check if an image was selected
-      if (formData.profileImage) {
-        const imageFormData = new FormData();
-        imageFormData.append("image", formData.profileImage);
+      const response = await axios.post(
+        `${baseUrl}/api/upload/images?containerName=admin`,
+        formData
+      );
+      console.log("admin pic:", response.data);
+      setSelectedImage(URL.createObjectURL(selectedFile));
 
-        const uploadResponse = await axios.post(
-          `${baseUrl}/api/upload/images?containerName=admin`,
-          imageFormData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        console.log(uploadResponse);
-
-        // Check if the image upload was successful
-        if (uploadResponse.data.success) {
-          const imageUrl = uploadResponse.data.url;
-
-          // Update the profileImage field with the obtained URL
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            profileImage: imageUrl,
-          }));
-
-
-          const data = {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            role: formData.role,
-            profileImage: imageUrl,
-            password: formData.password,
-          };
-          // Now, make the signup API call with the URL
-          const response = await axios.post(
-            `${baseUrl}/api/administration/signup`,
-            data,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
-
-          console.log(data);
-          handleShow();
-        } else {
-          // Handle the case where image upload failed
-          toast.error(uploadResponse.data.msg || "Image upload failed.");
-        }
-      } else {
-        // Handle the case where no image was selected
-        toast.error("Please select an image.");
-      }
+      setFormData((prevState) => ({
+        ...prevState,
+        profileImage: response.data.url,
+      }));
     } catch (error) {
-      console.error("Error posting user data:", error);
-      toast.error(error.response?.data?.errors?.msg || "An error occurred.");
-    
+      console.error("Error uploading thumbnail:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  
+  const fetchUsersData = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/administration/get-admin/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setFormData(response.data.admin);
+    } catch (error) {
+      console.error("Error fetching user data", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsersData();
+  }, []);
+
+  const adminData = {
+    name: formData.name,
+    email: formData.email,
+    phone: formData.phone,
+    role: formData.role,
+    password: formData.password,
+    profileImage: formData.profileImage,
+  };
+
+  const handleAdminUpdate = async () => {
+    try {
+      const response = await axios.put(
+        `${baseUrl}/api/administration/update-admin/${id}`,
+        adminData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.data);
+      toast.success("Admin updated successfully!");
+      setTimeout(() => {
+        navigate("/System");
+      }, 2000);
+    } catch (error) {
+      console.error("Error updating Admin data", error);
+      toast.error(error.response.data.errors.msg);
+      console.log(adminData);
+    }
+  };
+
   return (
     <div>
       <ToastContainer
@@ -133,7 +119,7 @@ console.log(selectedFile)
       <Row>
         <Col xl={6}>
           <p className="mt-3 fs-5" style={{ color: "#78828A" }}>
-            Create new user
+            Update Existing User
           </p>
           <div className="mt-3">
             <p style={{ color: "#78828A" }}>Profile Picture</p>
@@ -161,7 +147,7 @@ console.log(selectedFile)
                     />
                   ) : (
                     <img
-                      src="./defaultProfile.jpg"
+                      src="/defaultProfile.jpg"
                       alt="Default Profile Pic"
                       style={{
                         width: "100%",
@@ -190,7 +176,7 @@ console.log(selectedFile)
                     style={{ display: "none" }}
                   />
                   <img
-                    src="./Layer 2.svg"
+                    src="/Layer 2.svg"
                     alt=""
                     style={{
                       width: "100%",
@@ -210,7 +196,9 @@ console.log(selectedFile)
               type="text"
               name="name"
               value={formData.name}
-              onChange={handleInputChange}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               className="p-3 border rounded-4 w-100"
               placeholder="Criss Germano"
             />
@@ -219,7 +207,9 @@ console.log(selectedFile)
               type="text"
               name="email"
               value={formData.email}
-              onChange={handleInputChange}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               className="p-3 border rounded-4 w-100"
               placeholder="criss@braelo.co"
             />
@@ -228,7 +218,9 @@ console.log(selectedFile)
               type="text"
               name="phone"
               value={formData.phone}
-              onChange={handleInputChange}
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
               className="p-3 border rounded-4 w-100"
               placeholder="+1 (339) 215-9749"
             />
@@ -239,7 +231,9 @@ console.log(selectedFile)
                   type="password"
                   name="password"
                   value={formData.password}
-                  onChange={handleInputChange}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   className="p-3 border rounded-4 w-100"
                   placeholder="****"
                 />
@@ -249,7 +243,9 @@ console.log(selectedFile)
                 <select
                   name="role"
                   value={formData.role}
-                  onChange={handleInputChange}
+                  onChange={(e) =>
+                    setFormData({ ...formData, role: e.target.value })
+                  }
                   className="p-3 border rounded-4 w-100 text-muted"
                 >
                   <option value=""></option>
@@ -268,18 +264,18 @@ console.log(selectedFile)
               className="border w-25 p-2 rounded-3 text-white"
               style={{ backgroundColor: "#868E96" }}
               variant="primary"
-              onClick={handleSave}
+              onClick={handleAdminUpdate}
             >
               Save
             </button>
           </div>
         </Col>
-        <Modal show={show} centered>
+        {/* <Modal show={show} centered>
           <CongratulationCard onHide={handleClose} />
-        </Modal>
+        </Modal> */}
       </Row>
     </div>
   );
 };
 
-export default CreateNewUser;
+export default EditUser;

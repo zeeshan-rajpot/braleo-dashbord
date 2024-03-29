@@ -24,7 +24,6 @@ const Pins = () => {
       );
 
       setPinData(response.data.advertisements);
-      console.log(response.data.advertisements);
     } catch (error) {
       console.error("Error fetching banner data", error);
     } finally {
@@ -36,8 +35,8 @@ const Pins = () => {
     fetchData();
   }, []);
 
-  const handleUpdate = async () => {
-    await fetchData();
+  const handleUpdate =  () => {
+     fetchData();
   };
 
   return (
