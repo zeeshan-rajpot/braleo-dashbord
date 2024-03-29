@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
+import "../Components/faltCard.css";
 import axios from "axios"; // Import Axios
 import { ToastContainer, toast } from "react-toastify";
-import "../Components/faltCard.css";
 import { baseurl } from "../../../const.js";
-export const NewPlanmainPage = () => {
+
+export const UpdatePlans = () => {
   const firstbox = {
     width: "90px",
     height: "70px",
@@ -27,8 +28,10 @@ export const NewPlanmainPage = () => {
       "linear-gradient(139.43deg, #FDB807 13.25%, rgba(253, 184, 7, 0) 112.5%)",
   };
   const [planTitle, setPlanTitle] = useState("yellow");
-  const [planValue, setPlanValue] = useState("$ 14.99");
-  const [description, setDescription] = useState("");
+  const [planValue, setPlanValue] = useState(" 14.99");
+  const [description, setDescription] = useState(
+    "Start Writing and press Enter for next line.."
+  );
   const [selectedColor, setSelectedColor] = useState("");
 
   const handlePlanTitleChange = (event) => {
@@ -42,7 +45,6 @@ export const NewPlanmainPage = () => {
   const handleDescriptionChange = (event) => {
     setDescription(event.target.value);
   };
-
   const handleColorChange = (color) => {
     setSelectedColor(color);
   };
@@ -132,7 +134,7 @@ export const NewPlanmainPage = () => {
                 style={{ height: "20vh" }}
                 value={description}
                 onChange={handleDescriptionChange}
-                placeholder="Get to know Legally and Co's services and ask your questions, Get to know Legally and Co's services and ask your questions, Get to know Legally and Co's services and ask your questions I"
+                placeholder=""
                 className="p-3 border border-1 rounded-3 p-2 w-100 "
               />
             </Col>
@@ -219,7 +221,7 @@ export const NewPlanmainPage = () => {
             }}
           >
             <div className="text-end p-3">
-              <img src="/cards/Group 1000004914 (1).svg" alt="" />
+              <img src="/public/cards/Group 1000004914 (1).svg" alt="" />
             </div>
 
             <div
@@ -237,7 +239,7 @@ export const NewPlanmainPage = () => {
                 {planTitle}
               </p>
               <p className="mb-4 mt-3 ">
-                <b style={{ fontSize: "27.04px" }}> {planValue} </b>
+                <b style={{ fontSize: "27.04px" }}> $ {planValue} </b>
                 <span className="ms-1" style={{ color: "#616161" }}>
                   /month
                 </span>{" "}
@@ -248,16 +250,16 @@ export const NewPlanmainPage = () => {
               style={{ fontSize: "13.52px", fontWeight: "500" }}
             >
               <p>
-                <img src="/Darker Tick mark.svg" alt="" className="me-3" />
-                ads
-              </p>
-              <p>
-                <img src="/Darker Tick mark.svg" alt="" className="me-3" />3 Pin
-                fixed on map all yours
-              </p>
-              <p>
-                <img src="/Darker Tick mark.svg" alt="" className="me-3" />1 Pin
-                fixed on map all yours
+                {description.split("\n").map((line, index) => (
+                  <div key={index}>
+                    <img
+                      src="./Darker Tick mark.svg"
+                      alt="tick mark"
+                      className="me-3"
+                    />
+                    <span>{line}</span>
+                  </div>
+                ))}
               </p>
             </div>
           </div>
@@ -278,4 +280,4 @@ export const NewPlanmainPage = () => {
     </div>
   );
 };
-export default NewPlanmainPage;
+export default UpdatePlans;

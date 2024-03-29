@@ -35,12 +35,12 @@ export const PinsCard = ({ ProfileImage, pin, onUpdate }) => {
       >
         <Row className="my-2">
           <Col className="d-flex justify-content-end me-3 ">
-            <img src="./PinsImages/Group 1000004492.svg" className="me-2" />
-            <Link to="/EditPins">
-              <img src="./PinsImages/Group 1000004486.svg" className="me-2" />
+            <img src="/PinsImages/Group 1000004492.svg" className="me-2" />
+            <Link to={`/EditPins/${pin._id}`}>
+              <img src="/PinsImages/Group 1000004486.svg" className="me-2" />
             </Link>
             <img
-              src="./PinsImages/Group 1000004490.svg"
+              src="/PinsImages/Group 1000004490.svg"
               variant="primary"
               onClick={delhandleShow}
               role="button"
@@ -62,10 +62,8 @@ export const PinsCard = ({ ProfileImage, pin, onUpdate }) => {
           </Card.Title>
           <Card.Text
             className="d-flex justify-content-start  align-items-center mt-5"
-            // style={{ fontSize: '15px' }}
           >
             <div>
-              {/* <img src='./PinsImages/Rectangle 23835.svg' alt='' /> */}
               <img src={ProfileImage} alt="" />
             </div>
             <div className="ms-2">
@@ -85,7 +83,12 @@ export const PinsCard = ({ ProfileImage, pin, onUpdate }) => {
       </Modal>
       {/* //Del Modal ------------------- */}
       <Modal show={delshow} centered>
-        <DelModalCard onHide={delhandleClose} id={pin._id} type="PinAd" /> onUpdate={onUpdate}
+        <DelModalCard
+          onHide={delhandleClose}
+          id={pin._id}
+          type="PinAd"
+          onUpdate={onUpdate}
+        />
       </Modal>
     </div>
   );

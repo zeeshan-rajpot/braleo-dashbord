@@ -42,7 +42,7 @@ export const NewUsermainPage = () => {
                 }}
               >
                 <img
-                  src='./Layer 2.svg'
+                  src='/Layer 2.svg'
                   alt=''
                   style={{
                     width: '100%',

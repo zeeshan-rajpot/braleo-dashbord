@@ -3,17 +3,16 @@ import { Container, Row, Col } from "react-bootstrap";
 import SideBar from "../../../Components/SideBar.jsx";
 import NaveBar from "../../../Components/NaveBar.jsx";
 import BannerTab from "../BannerTab";
-import ModalCard from "../Modal/NextModal.jsx";
-import Modal from "react-bootstrap/Modal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
 import { baseUrl } from "../../../Constants/Constants.js";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 
 const EditBanner = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [keywordInput, setKeywordInput] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [errorOccurred, setErrorOccurred] = useState(false);
@@ -50,12 +49,6 @@ const EditBanner = () => {
     fileInputRef.current.click();
   };
 
-  //------------------------- Modal---------------------------------------
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -67,7 +60,7 @@ const EditBanner = () => {
         }
       );
 
-      setBannerData(response?.data?.advertisement);
+      setBannerData(response.data.advertisement);
       console.log(response.data);
     } catch (error) {
       console.error("Error fetching banner data", error);
@@ -96,14 +89,12 @@ const EditBanner = () => {
 
   const handleFileSelected = async (e) => {
     setLoading(true);
-    const file = e.target.files[0];
+    const selectedFile = e.target.files[0];
 
-    if (file) {
+    if (selectedFile) {
       try {
         const formData = new FormData();
-        formData.append("file", file);
-        // Append the banner data to the formData
-        formData.append("bannerData", JSON.stringify(udpdatedData));
+        formData.append("image", selectedFile);
 
         const uploadResponse = await axios.post(
           `${baseUrl}/api/upload/images?containerName=listing`,
@@ -126,7 +117,7 @@ const EditBanner = () => {
         reader.onloadend = () => {
           setImagePreview(reader.result);
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(selectedFile);
       } catch (error) {
         console.error("Error uploading image:", error);
         toast.error("Error uploading image");
@@ -150,6 +141,10 @@ const EditBanner = () => {
       );
       console.log(response.data);
       toast.success("Banner updated successfully!");
+
+      setTimeout(() => {
+        navigate("/Dashboard");
+      }, 3000);
     } catch (err) {
       console.error("Error updating banner data", err);
       toast.error("Error updating banner data");
@@ -270,22 +265,23 @@ const EditBanner = () => {
                       className="d-flex flex-wrap"
                       style={{ height: "auto", width: "100%" }}
                     >
-                      {bannerData.keywords.map((keyword, index) => (
-                        <div
-                          key={index}
-                          className="badge rounded-5 bg-warning p-2 me-2 text-center mt-2"
-                          style={{
-                            backgroundColor: "rgba(254, 240, 203, 0.7)",
-                            color: "#A77C0E",
-                            cursor: "pointer",
-                            width: "auto",
-                            height: "28px",
-                          }}
-                          onClick={() => removeKeyword(index)}
-                        >
-                          {keyword}
-                        </div>
-                      ))}
+                      {bannerData.keywords &&
+                        bannerData.keywords.map((keyword, index) => (
+                          <div
+                            key={index}
+                            className="badge rounded-5 bg-warning p-2 me-2 text-center mt-2"
+                            style={{
+                              backgroundColor: "rgba(254, 240, 203, 0.7)",
+                              color: "#A77C0E",
+                              cursor: "pointer",
+                              width: "auto",
+                              height: "28px",
+                            }}
+                            onClick={() => removeKeyword(index)}
+                          >
+                            {keyword}
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </div>

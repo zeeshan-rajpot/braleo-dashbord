@@ -7,12 +7,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { baseUrl } from "../../../Constants/Constants.js";
+import { ClipLoader } from "react-spinners";
 
 export const AddNewPostPage = () => {
   const [isActive, setIsActive] = useState(false);
   const [selected, setIsSelected] = useState("Massive actions");
   const [displayData, setDisplayData] = useState("Filter");
-
   const [pisActive, psetIsActive] = useState(false);
   const [pselected, psetIsSelected] = useState("Paragraph");
   const [fisActive, fsetIsActive] = useState(false);
@@ -20,6 +20,7 @@ export const AddNewPostPage = () => {
   const [szisActive, szsetIsActive] = useState(false);
   const [szselected, szsetIsSelected] = useState("12pt");
   const [errorOccurred, setErrorOccurred] = useState(false);
+  const [loading, setLoading] = useState(false);
   // Define a function to handle dropdown item clicks
   const handleDropdownItemClick = (data) => {
     setIsSelected(data);
@@ -82,10 +83,6 @@ export const AddNewPostPage = () => {
     postThumbnail: "",
     authorName: "",
     profilePic: "",
-    images: [
-      "https://example.com/image1.jpg",
-      "https://example.com/image2.jpg",
-    ],
     keywords: keywords,
     scheduledAt: "2023-10-15T12:00:00Z", // Scheduled publication date and time in ISO format
   });
@@ -108,11 +105,14 @@ export const AddNewPostPage = () => {
 
   const [postThumbnailPreview, setPostThumbnailPreview] = useState("");
   const [profilePicPreview, setProfilePicPreview] = useState("");
+  const [postThumbnailLoading, setPostThumbnailLoading] = useState(false);
+  const [profilePicLoading, setProfilePicLoading] = useState(false);
 
   const handlePostThumbnailSelected = async (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       try {
+        setPostThumbnailLoading(true);
         const formData = new FormData();
         formData.append("image", selectedFile);
 
@@ -141,6 +141,8 @@ export const AddNewPostPage = () => {
       } catch (error) {
         console.error("Error uploading post thumbnail:", error);
         toast.error("Error uploading post thumbnail");
+      } finally {
+        setPostThumbnailLoading(false);
       }
     }
   };
@@ -149,6 +151,7 @@ export const AddNewPostPage = () => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       try {
+        setProfilePicLoading(true);
         const formData = new FormData();
         formData.append("image", selectedFile);
 
@@ -177,6 +180,8 @@ export const AddNewPostPage = () => {
       } catch (error) {
         console.error("Error uploading profile pic:", error);
         toast.error("Error uploading profile pic");
+      } finally {
+        setProfilePicLoading(false);
       }
     }
   };
@@ -277,7 +282,7 @@ export const AddNewPostPage = () => {
                     >
                       {pselected}
                       <span>
-                        <img src="./dropdownicon.svg" alt="dropdown icon" />
+                        <img src="/dropdownicon.svg" alt="dropdown icon" />
                       </span>
                     </div>
                     <div
@@ -324,7 +329,7 @@ export const AddNewPostPage = () => {
                     >
                       {fselected}
                       <span>
-                        <img src="./dropdownicon.svg" alt="dropdown icon" />
+                        <img src="/dropdownicon.svg" alt="dropdown icon" />
                       </span>
                     </div>
                     <div
@@ -371,7 +376,7 @@ export const AddNewPostPage = () => {
                     >
                       {szselected}
                       <span>
-                        <img src="./dropdownicon.svg" alt="dropdown icon" />
+                        <img src="/dropdownicon.svg" alt="dropdown icon" />
                       </span>
                     </div>
                     <div
@@ -429,38 +434,43 @@ export const AddNewPostPage = () => {
                   position: "relative", // Add position relative
                 }}
               >
-                <Col xs="auto">
-                  {postThumbnailPreview ? (
-                    <img
-                      src={postThumbnailPreview}
-                      alt="preview"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                      }}
+                {postThumbnailLoading ? (
+                  <ClipLoader color="#AB9E7D" loading={postThumbnailLoading} />
+                ) : (
+                  <Col xs="auto">
+                    {postThumbnailPreview ? (
+                      <img
+                        src={postThumbnailPreview}
+                        alt="preview"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src="/BannerFilesIcon.svg"
+                        alt="files icon"
+                        onClick={() => handleIconClick(postThumbnailInputRef)}
+                        style={{
+                          cursor: "pointer",
+                          marginTop: "50px",
+                          width: "150%",
+                        }}
+                      />
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={postThumbnailInputRef}
+                      style={{ display: "none" }}
+                      onChange={handlePostThumbnailSelected}
                     />
-                  ) : (
-                    <img
-                      src="./BannerFilesIcon.svg"
-                      alt="files icon"
-                      onClick={() => handleIconClick(postThumbnailInputRef)}
-                      style={{
-                        cursor: "pointer",
-                        marginTop: "50px",
-                        width: "150%",
-                      }}
-                    />
-                  )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    ref={postThumbnailInputRef}
-                    style={{ display: "none" }}
-                    onChange={handlePostThumbnailSelected}
-                  />
-                </Col>
+                  </Col>
+                )}
+
                 <Col>
                   <p
                     className=" text-center  mt-2"
@@ -496,38 +506,43 @@ export const AddNewPostPage = () => {
                   position: "relative", // Add position relative
                 }}
               >
-                <Col xs="auto">
-                  {profilePicPreview ? (
-                    <img
-                      src={profilePicPreview}
-                      alt="preview"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                      }}
+                {profilePicLoading ? (
+                  <ClipLoader color="#AB9E7D" loading={profilePicLoading} />
+                ) : (
+                  <Col xs="auto">
+                    {profilePicPreview ? (
+                      <img
+                        src={profilePicPreview}
+                        alt="preview"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src="./BannerFilesIcon.svg"
+                        alt="files icon"
+                        onClick={() => handleIconClick(profilePicInputRef)}
+                        style={{
+                          cursor: "pointer",
+                          marginTop: "50px",
+                          width: "150%",
+                        }}
+                      />
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={profilePicInputRef}
+                      style={{ display: "none" }}
+                      onChange={handleProfilePicSelected}
                     />
-                  ) : (
-                    <img
-                      src="./BannerFilesIcon.svg"
-                      alt="files icon"
-                      onClick={() => handleIconClick(profilePicInputRef)}
-                      style={{
-                        cursor: "pointer",
-                        marginTop: "50px",
-                        width: "150%",
-                      }}
-                    />
-                  )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    ref={profilePicInputRef}
-                    style={{ display: "none" }}
-                    onChange={handleProfilePicSelected}
-                  />
-                </Col>
+                  </Col>
+                )}
+
                 <Col>
                   <p
                     className=" text-center  mt-2"

@@ -27,8 +27,10 @@ export const createNew = () => {
       "linear-gradient(139.43deg, #FDB807 13.25%, rgba(253, 184, 7, 0) 112.5%)",
   };
   const [planTitle, setPlanTitle] = useState("yellow");
-  const [planValue, setPlanValue] = useState("$ 14.99");
-  const [description, setDescription] = useState("");
+  const [planValue, setPlanValue] = useState(" 14.99");
+  const [description, setDescription] = useState(
+    "Start Writing and press Enter for next line.."
+  );
   const [selectedColor, setSelectedColor] = useState("");
 
   const handlePlanTitleChange = (event) => {
@@ -131,7 +133,7 @@ export const createNew = () => {
                 style={{ height: "20vh" }}
                 value={description}
                 onChange={handleDescriptionChange}
-                placeholder="Get to know Legally and Co's services and ask your questions, Get to know Legally and Co's services and ask your questions, Get to know Legally and Co's services and ask your questions I"
+                placeholder=""
                 className="p-3 border border-1 rounded-3 p-2 w-100 "
               />
             </Col>
@@ -236,30 +238,27 @@ export const createNew = () => {
                 {planTitle}
               </p>
               <p className="mb-4 mt-3 ">
-                <b style={{ fontSize: "27.04px" }}> {planValue} </b>
+                <b style={{ fontSize: "27.04px" }}> $ {planValue} </b>
                 <span className="ms-1" style={{ color: "#616161" }}>
                   /month
                 </span>{" "}
               </p>
-              {/* <div style={{ width: '10% !important' }}>
-                <p className='text-muted w-25'>{description}</p>
-              </div> */}
             </div>
             <div
               className=" w-75 m-auto mt-4"
               style={{ fontSize: "13.52px", fontWeight: "500" }}
             >
               <p>
-                <img src="./Darker Tick mark.svg" alt="" className="me-3" />4
-                monthly ads
-              </p>
-              <p>
-                <img src="./Darker Tick mark.svg" alt="" className="me-3" />1
-                Pin fixed on map all yours
-              </p>
-              <p>
-                <img src="./Darker Tick mark.svg" alt="" className="me-3" />1
-                Pin fixed on map all yours
+                {description.split("\n").map((line, index) => (
+                  <div key={index}>
+                    <img
+                      src="./Darker Tick mark.svg"
+                      alt="tick mark"
+                      className="me-3"
+                    />
+                    <span>{line}</span>
+                  </div>
+                ))}
               </p>
             </div>
           </div>

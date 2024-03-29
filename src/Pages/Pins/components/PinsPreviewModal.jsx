@@ -25,7 +25,7 @@ export const PinsPreviewModal = ({ pin }) => {
             }}
           >
             <img src="./cards/location.svg" alt="" className="me-3" />
-            {pin.local || " Miami,Fl"}
+            {pin.location || " Miami,Fl"}
           </button>
         </Col>
         <Col xl={5}></Col>
@@ -43,8 +43,7 @@ export const PinsPreviewModal = ({ pin }) => {
           <p
             style={{ fontWeight: "600", color: "#101828", fontSize: "27.47px" }}
           >
-            Lide Business Group
-            <br /> Florida
+            {pin.name}
           </p>
           <LinesEllipsis
             text={pin.description}
@@ -72,7 +71,7 @@ export const PinsPreviewModal = ({ pin }) => {
           </p>
         </div>
         <div className="mt-4">
-          <img src="./image/google Map image.png" alt="" />
+          <img src="/image/google Map image.png" alt="" />
         </div>
 
         <div className="mt-5 d-flex justify-content-between align-items-center">
@@ -84,7 +83,7 @@ export const PinsPreviewModal = ({ pin }) => {
                 fontWeight: "600",
               }}
             >
-              Contato
+              Contact
             </p>
             <p
               style={{
@@ -93,26 +92,35 @@ export const PinsPreviewModal = ({ pin }) => {
                 fontWeight: "600",
               }}
             >
-              +1 (339) 215-9749
+              {pin.contact}
             </p>
           </div>
           <div>
-            <img src="./social icons/Group 1000004550.svg" alt="" />
-            <img
-              src="./social icons/Group 1000004526.svg"
-              alt=""
-              className="ms-3"
-            />
-            <img
-              src="./social icons/Group 1000004525.svg"
-              alt=""
-              className="ms-3"
-            />
-            <img
-              src="./social icons/Group 1000004524.svg"
-              alt=""
-              className="ms-3"
-            />
+            <img src="/social icons/Group 1000004550.svg" alt="" />
+            <a href={pin.facebook} target="_blank">
+              {" "}
+              <img
+                src="/social icons/Group 1000004526.svg"
+                alt=""
+                className="ms-3"
+              />
+            </a>
+            <a href={pin.instagram} target="_blank">
+              {" "}
+              <img
+                src="/social icons/Group 1000004525.svg"
+                alt=""
+                className="ms-3"
+              />
+            </a>
+            <a href={pin.whatsapp} target="_blank">
+              {" "}
+              <img
+                src="/social icons/Group 1000004524.svg"
+                alt=""
+                className="ms-3"
+              />
+            </a>
           </div>
         </div>
       </div>

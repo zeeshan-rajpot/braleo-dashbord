@@ -14,7 +14,7 @@ export const FlatCard = () => {
       }}
     >
       <div className="text-end p-3">
-        <img src="/public/cards/Group 1000004914 (1).svg" alt="" />
+        <img src="/cards/Group 1000004914 (1).svg" alt="" />
       </div>
 
       <div
@@ -45,15 +45,15 @@ export const FlatCard = () => {
           ads month
         </p>
         <p>
-          <img src="./Hard Darker tick mark .svg" alt="" className="me-3" />1
+          <img src="/Hard Darker tick mark .svg" alt="" className="me-3" />1
           Pin on the map all yours
         </p>
         <p>
-          <img src="./Hard Darker tick mark .svg" alt="" className="me-3" />
+          <img src="/Hard Darker tick mark .svg" alt="" className="me-3" />
           Unlimited highlights
         </p>
         <p>
-          <img src="./Hard Darker tick mark .svg" alt="" className="me-3" />
+          <img src="/Hard Darker tick mark .svg" alt="" className="me-3" />
           Exclusive Support
         </p>
       </div>
