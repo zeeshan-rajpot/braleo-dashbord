@@ -43,8 +43,6 @@ import EditUser from "./Pages/System/UpdatePages/EditUser.jsx";
 import EditIllustrations from "./Pages/System/pages/CreateUser.jsx";
 import CreatenewPlan from "./Pages/Plans/pages/createnewPlan.jsx";
 import CreatePlansUser from "./Pages/Plans/pages/Createnewuser.jsx";
-import EditPlanUser from "./Pages/Plans/Update Planes/UpdatePlans.jsx";
-import EditPlans from "./Pages/Plans/Update Planes/UpdatePlantabbar.jsx";
 
 function App() {
   return (
@@ -95,10 +93,8 @@ function App() {
         {/* <Route path="/EditUser" element={<EditUser />} /> */}
 
         <Route path="/EditIllustrations" element={<EditIllustrations />} />
-        <Route path="/CreatenewPlan" element={<CreatenewPlan />} />
+        <Route path="/CreatenewPlan/:id" element={<CreatenewPlan />} />
         <Route path="/CreatePlansUser" element={<CreatePlansUser />} />
-        <Route path="/EditPlansUser" element={<EditPlanUser />} />
-        <Route path="/EditPlans/:id" element={<EditPlans />} />
       </Routes>
     </BrowserRouter>
   );

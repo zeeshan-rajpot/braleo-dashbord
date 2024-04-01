@@ -1,7 +1,16 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import ClipLoader from "react-spinners/ClipLoader";
+import { ToastContainer, toast } from "react-toastify";
+import { baseurl } from "../../../const.js";
+
 export const CreateListingPage = () => {
+  const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [thumbnail, setThumbnail] = useState("");
+  const [adPics, setAdPics] = useState([]);
   const [keywordInput, setKeywordInput] = useState("");
   const [keywords, setKeywords] = useState([
     "Pub",
@@ -20,25 +29,31 @@ export const CreateListingPage = () => {
 
   const [listingData, setListingData] = useState({
     listingType: "property",
-    title: "Beautiful 5 Bedroom House",
-    description:
-      "A beautiful 3 bedroom house located in the heart of the city. It comes with a spacious living room and modern amenities.",
-    price: 30000,
-    thumnail: "https://example.com/profile.jpg",
-    images: ["https://example.com/profile.jpg"],
-    keywords: ["house", "3 bedroom", "city", "modern", "spacious"],
+    title: "",
+    description: "",
+    price: "",
+    thumnail: thumbnail,
+    images: adPics,
+    keywords: keywords,
     location: {
-      address: "123 Main St",
-      state: "SomeState",
-      city: "BigCity",
-      zipCode: "12345",
-      coordinates: [40.7128, 74.006],
+      address: "",
+      state: "",
+      city: "",
+      zipCode: "",
+      coordinates: [],
     },
 
-    dorms: 3,
-    bathroom: 2,
-    suites: 1,
-    jobs: 2,
+    date: "",
+    time: "",
+    start: "",
+    end: "",
+
+    socials: {
+      whatsApp: "",
+      instagram: "",
+      facebook: "",
+      website: "",
+    },
   });
 
   const handleChange = (e) => {
@@ -62,20 +77,134 @@ export const CreateListingPage = () => {
     setKeywords(updatedKeywords);
   };
 
+  useEffect(() => {
+    setListingData((prevState) => ({
+      ...prevState,
+      keywords: keywords,
+    }));
+  }, [keywords]);
+
   const fileInputRef = useRef(null);
 
   const handleIconClick = () => {
-    // Trigger the file input when the icon is clicked
     fileInputRef.current.click();
   };
 
-  const handleFileSelected = (e) => {
-    const selectedFile = e.target.files[0];
-    // Do something with the selected file (e.g., upload or display it)
+  const handleFileSelected = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await axios.post(
+        `${baseurl}/api/upload/images?containerName=listing`,
+        formData
+      );
+      setImagePreview(URL.createObjectURL(file));
+      setThumbnail(response.data.url);
+
+      setListingData((prevState) => ({
+        ...prevState,
+        thumbnail: response.data.url,
+      }));
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const [imagePreviews, setImagePreviews] = useState([]);
+
+  const handleImageChange = async (e, index) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const newPreviews = [...imagePreviews];
+      newPreviews[index] = event.target.result;
+      setImagePreviews(newPreviews);
+
+      // Upload image to the database and store the URL
+      const url = await uploadImage(file);
+      if (url) {
+        setAdpics((prevState) => [...prevState, url]);
+
+        // Update pinData state here
+        setPinData((prevState) => ({
+          ...prevState,
+          adPictures: [...prevState.adPictures, url],
+        }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await axios.post(
+        `${baseurl}/api/upload/images?containerName=listing`,
+        formData
+      );
+
+      // Update adPics state with the new image URL
+      setAdPics((prevState) => [...prevState, response.data.url]);
+
+      // Update pinData state with the new adPictures array
+      setListingData((prevState) => ({
+        ...prevState,
+        images: [...prevState.images, response.data.url],
+      }));
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
+
+  const handleSave = async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.post(
+        `${baseurl}/api/administration/new-listing`,
+        listingData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("POST API Response:", response.data);
+      handleShow(true);
+      toast.success("Listing Posted Successfully");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Error:", response.data.errors.msg);
+    }
   };
 
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Row>
         <Row>
           <h2 className="text-muted pt-4">Create new Listing</h2>
@@ -160,6 +289,8 @@ export const CreateListingPage = () => {
               <input
                 placeholder="13/09/2023"
                 className="border border-1 rounded-3 p-2 w-100 "
+                name="date"
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -170,6 +301,7 @@ export const CreateListingPage = () => {
               <input
                 placeholder="4pm"
                 className="border border-1 rounded-3 p-2 w-100 "
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -255,6 +387,8 @@ export const CreateListingPage = () => {
               <input
                 placeholder="https://braelo.co/"
                 className="border border-1 rounded-3 p-2 w-100 "
+                name="website"
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -264,6 +398,8 @@ export const CreateListingPage = () => {
               <input
                 placeholder="https://wa.me/00000000"
                 className="border border-1 rounded-3 p-2 w-100 "
+                name="whatsApp"
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -275,6 +411,8 @@ export const CreateListingPage = () => {
               <input
                 placeholder="fb.com/youraccount"
                 className="border border-1 rounded-3 p-2 w-100 "
+                name="facebook"
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -284,6 +422,8 @@ export const CreateListingPage = () => {
               <input
                 placeholder="https://wa.me/00000000"
                 className="border border-1 rounded-3 p-2 w-100 "
+                name="instagram"
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -294,29 +434,51 @@ export const CreateListingPage = () => {
             <div
               className="d-flex flex-column justify-content-center align-items-center w-100 p-4"
               style={{
-                border: "2px dotted rgba(205, 148, 3, 0.5)",
-                height: "300px",
+                border: "2px dotted #868E96",
+
                 borderRadius: "11.891px",
+                backgroundColor: "#DEE2E642",
+                minHeight: "300px", // Set the height to auto
+                position: "relative", // Add position relative
               }}
             >
               <Col xs="auto">
-                {/* <img src='./BannerFilesIcon.svg' alt='files icon' /> */}
-                <img
-                  src="./BannerFilesIcon.svg"
-                  alt="files icon"
-                  onClick={handleIconClick}
-                  style={{
-                    cursor: "pointer",
-                    marginTop: "50px",
-                    width: "150%",
-                  }}
-                />
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  onChange={handleFileSelected}
-                />
+                {loading ? (
+                  <ClipLoader color={"#ffcc35"} loading={loading} size={100} />
+                ) : (
+                  <>
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="preview"
+                        style={{
+                          width: "100%",
+                          height: "300px",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src="/BannerFilesIcon.svg"
+                        alt="files icon"
+                        onClick={handleIconClick}
+                        style={{
+                          cursor: "pointer",
+                          marginTop: "50px",
+                          width: "150%",
+                        }}
+                      />
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      style={{ display: "none" }}
+                      onChange={handleFileSelected}
+                    />
+                  </>
+                )}
               </Col>
               <Col>
                 <p
@@ -332,169 +494,61 @@ export const CreateListingPage = () => {
           </Col>
         </Row>
         <Row className="mb-5 mt-5">
-          <h6 className="text-muted ">Ad pictures</h6>
-          <Col xl={2} xs={5}>
-            <div
-              className="d-flex flex-column mt-3 justify-content-center align-items-center w-100 p-4"
-              style={{
-                border: "2px dotted rgba(205, 148, 3, 0.5)",
-                borderRadius: "11.891px",
-              }}
-            >
-              <Col xs="auto">
-                <img
-                  src="./Ad Picture.svg"
-                  alt="files icon"
-                  onClick={handleIconClick}
-                  style={{
-                    cursor: "pointer",
-                    width: "70px",
-                  }}
-                />
+          <h6 className="text-muted">Ad pictures</h6>
+          {[...Array(6)].map((_, index) => (
+            <Col key={index}>
+              <label htmlFor={`image-input-${index}`}>
                 <input
+                  id={`image-input-${index}`}
                   type="file"
-                  ref={fileInputRef}
+                  accept="image/*"
                   style={{ display: "none" }}
-                  onChange={handleFileSelected}
+                  onChange={(e) => handleImageChange(e, index)}
                 />
-              </Col>
-            </div>
-          </Col>
-          <Col xl={2} xs={5}>
-            <div
-              className="d-flex flex-column mt-3 justify-content-center align-items-center w-100 p-4"
-              style={{
-                border: "2px dotted rgba(205, 148, 3, 0.5)",
-                borderRadius: "11.891px",
-              }}
-            >
-              <Col xs="auto">
-                <img
-                  src="./Ad Picture.svg"
-                  alt="files icon"
-                  onClick={handleIconClick}
-                  style={{
-                    cursor: "pointer",
-                    width: "70px",
-                  }}
-                />
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  onChange={handleFileSelected}
-                />
-              </Col>
-            </div>
-          </Col>
-          <Col xl={2} xs={5}>
-            <div
-              className="d-flex flex-column mt-3 justify-content-center align-items-center w-100 p-4"
-              style={{
-                border: "2px dotted rgba(205, 148, 3, 0.5)",
-                borderRadius: "11.891px",
-              }}
-            >
-              <Col xs="auto">
-                <img
-                  src="./Ad Picture.svg"
-                  alt="files icon"
-                  onClick={handleIconClick}
-                  style={{
-                    cursor: "pointer",
-                    width: "70px",
-                  }}
-                />
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  onChange={handleFileSelected}
-                />
-              </Col>
-            </div>
-          </Col>
-          <Col xl={2} xs={5}>
-            <div
-              className="d-flex flex-column mt-3 justify-content-center align-items-center w-100 p-4"
-              style={{
-                border: "2px dotted rgba(205, 148, 3, 0.5)",
-                borderRadius: "11.891px",
-              }}
-            >
-              <Col xs="auto">
-                <img
-                  src="./Ad Picture.svg"
-                  alt="files icon"
-                  onClick={handleIconClick}
-                  style={{
-                    cursor: "pointer",
-                    width: "70px",
-                  }}
-                />
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  onChange={handleFileSelected}
-                />
-              </Col>
-            </div>
-          </Col>
-          <Col xl={2} xs={5}>
-            <div
-              className="d-flex flex-column mt-3 justify-content-center align-items-center w-100 p-4"
-              style={{
-                border: "2px dotted rgba(205, 148, 3, 0.5)",
-                borderRadius: "11.891px",
-              }}
-            >
-              <Col xs="auto">
-                <img
-                  src="./Ad Picture.svg"
-                  alt="files icon"
-                  onClick={handleIconClick}
-                  style={{
-                    cursor: "pointer",
-                    width: "70px",
-                  }}
-                />
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  onChange={handleFileSelected}
-                />
-              </Col>
-            </div>
-          </Col>
-          <Col xl={2} xs={5}>
-            <div
-              className="d-flex flex-column mt-3 justify-content-center align-items-center w-100 p-4"
-              style={{
-                border: "2px dotted rgba(205, 148, 3, 0.5)",
-                borderRadius: "11.891px",
-              }}
-            >
-              <Col xs="auto">
-                <img
-                  src="./Ad Picture.svg"
-                  alt="files icon"
-                  onClick={handleIconClick}
-                  style={{
-                    cursor: "pointer",
-                    width: "70px",
-                  }}
-                />
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  onChange={handleFileSelected}
-                />
-              </Col>
-            </div>
-          </Col>
+                {imagePreviews[index] ? (
+                  <img
+                    src={imagePreviews[index]}
+                    alt={`Preview ${index}`}
+                    style={{
+                      marginTop: "10px",
+                      width: "110px",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="d-flex flex-column justify-content-center align-items-center w-100 p-4 m-2"
+                    style={{
+                      border: "2px dotted #868E96",
+                      borderRadius: "11.891px",
+                      backgroundColor: "#DEE2E642",
+                      width: "70px",
+                    }}
+                  >
+                    <div>
+                      <Col xs="auto">
+                        <img
+                          src="/Ad Picture.svg"
+                          alt="files icon"
+                          onClick={handleIconClick}
+                          style={{
+                            cursor: "pointer",
+                            width: "70px",
+                          }}
+                        />
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          style={{ display: "none" }}
+                          onChange={handleFileSelected}
+                        />
+                      </Col>
+                    </div>
+                  </div>
+                )}
+              </label>
+            </Col>
+          ))}
         </Row>
         <Row className="mt-4 mb-4">
           <Col lg={8}></Col>
@@ -515,13 +569,13 @@ export const CreateListingPage = () => {
               </button>
             </Col>
             <Col>
-              <Link className="text-muted" to="/CreateListingPreview">
+              <Link className="text-muted">
                 <button
                   type="button"
                   className="ms-2 w-100 rounded-3 p-2 border-0 text-white "
                   style={{ backgroundColor: "#596068" }}
                 >
-                  Next
+                  Done
                 </button>
               </Link>
             </Col>

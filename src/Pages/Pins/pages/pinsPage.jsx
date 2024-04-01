@@ -1,4 +1,4 @@
-import React, { useState, useRef , useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
@@ -159,6 +159,7 @@ export const PinsPage = () => {
       console.error("Error uploading image:", error);
     }
   };
+
   const renderImagePreviews = () => {
     return imagePreviews.map((preview, index) => (
       <div
@@ -430,7 +431,7 @@ export const PinsPage = () => {
         <Row className="mb-5 mt-5">
           <h6 className="text-muted ">Ad pictures</h6>
           {[...Array(6)].map((_, index) => (
-            <Col key={index} xl={2} xs={12}>
+            <Col key={index} md={4}>
               <label htmlFor={`image-input-${index}`}>
                 <input
                   id={`image-input-${index}`}
@@ -472,7 +473,7 @@ export const PinsPage = () => {
                       className="delete-icon"
                       style={{ position: "absolute", top: "5px", right: "5px" }}
                     >
-                      <img src="./Delete, Disabled.svg" alt="Delete" />
+                      <img src="/Delete, Disabled.svg" alt="Delete" />
                     </div>
                     <div
                       className="image-container"
@@ -483,7 +484,9 @@ export const PinsPage = () => {
                         height: "100%",
                         backgroundImage: `url('./rectangularIMAGEPNG.png')`,
                       }}
-                    ></div>
+                    >
+
+                    </div>
                   </div>
                 )}
               </label>

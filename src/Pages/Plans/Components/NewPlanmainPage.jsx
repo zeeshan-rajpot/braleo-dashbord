@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import axios from "axios"; // Import Axios
 import { ToastContainer, toast } from "react-toastify";
 import "../Components/faltCard.css";
 import { baseurl } from "../../../const.js";
+import { useParams, useNavigate } from "react-router";
 export const NewPlanmainPage = () => {
   const firstbox = {
     width: "90px",
@@ -26,71 +27,63 @@ export const NewPlanmainPage = () => {
       "linear-gradient(148.35deg, #FDB807 8.2%, rgba(253, 184, 7, 0) 98.61%), " +
       "linear-gradient(139.43deg, #FDB807 13.25%, rgba(253, 184, 7, 0) 112.5%)",
   };
-  const [planTitle, setPlanTitle] = useState("yellow");
-  const [planValue, setPlanValue] = useState("$ 14.99");
-  const [description, setDescription] = useState("");
+
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [selectedColor, setSelectedColor] = useState("");
-
-  const handlePlanTitleChange = (event) => {
-    setPlanTitle(event.target.value);
-  };
-
-  const handlePlanValueChange = (event) => {
-    setPlanValue(event.target.value);
-  };
-
-  const handleDescriptionChange = (event) => {
-    setDescription(event.target.value);
-  };
+  const [planData, setPlanData] = useState({
+    title: "",
+    price: "",
+    description: "",
+    color: "",
+  });
 
   const handleColorChange = (color) => {
     setSelectedColor(color);
   };
-  const handleSaveClick = async () => {
-    const dataToSend = {
-      title: planTitle,
-      price: planValue,
-      description: description,
-      color: selectedColor,
-    };
 
-    // Get token from local storage
-    const token = localStorage.getItem("token"); // Assuming your token key is 'token'
-
+  const fetchData = async () => {
     try {
-      const response = await axios.post(`${baseurl}/api/plan/new`, dataToSend, {
+      const response = await axios.get(`${baseurl}/api/plan/get/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
-      // Handle response or success message
-      // console.log( 'Data sent:',response.data  );
-      toast.success(response.data.msg, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      setPlanData(response.data.plan);
+      // console.log(response.data);
     } catch (error) {
-      // Handle error
-      // console.error( 'Error:', error );
-      toast.error(error.response.data.errors.msg, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      // console.error("Error fetching banner data", error);
+      toast.error("Error fetching banner data");
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleSaveClick = async () => {
+    try {
+      const response = await axios.put(
+        `${baseurl}/api/plan/update/${id}`,
+        planData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      // console.log(response.data);
+      toast.success(response.data.msg);
+      setTimeout(() => {
+        navigate("/Plans");
+      }, [2000]);
+    } catch (error) {
+      // console.error("Error updating plan", error);
+      toast.error(error.response.data.errors.msg);
+    }
+  };
+
   return (
     <div>
       <Row>
@@ -108,8 +101,10 @@ export const NewPlanmainPage = () => {
               </label>
               <input
                 placeholder="Yellow basic plan"
-                value={planTitle}
-                onChange={handlePlanTitleChange}
+                value={planData.title}
+                onChange={(e) =>
+                  setPlanData({ ...planData, title: e.target.value })
+                }
                 className="p-3 border border-1 rounded-3 p-2 w-100 "
               />
             </Col>
@@ -119,8 +114,10 @@ export const NewPlanmainPage = () => {
               </label>
               <input
                 placeholder="$ 14,99 /month"
-                value={planValue}
-                onChange={handlePlanValueChange}
+                value={planData.price}
+                onChange={(e) =>
+                  setPlanData({ ...planData, price: e.target.value })
+                }
                 className="p-3 border border-1 rounded-3 p-2 w-100 "
               />
             </Col>
@@ -130,8 +127,10 @@ export const NewPlanmainPage = () => {
               </label>
               <textarea
                 style={{ height: "20vh" }}
-                value={description}
-                onChange={handleDescriptionChange}
+                value={planData.description}
+                onChange={(e) =>
+                  setPlanData({ ...planData, description: e.target.value })
+                }
                 placeholder="Get to know Legally and Co's services and ask your questions, Get to know Legally and Co's services and ask your questions, Get to know Legally and Co's services and ask your questions I"
                 className="p-3 border border-1 rounded-3 p-2 w-100 "
               />
@@ -144,12 +143,12 @@ export const NewPlanmainPage = () => {
                 <div className="d-flex justify-content-center align-items-center">
                   <input
                     type="radio"
+                    name="color"
                     onChange={() => handleColorChange("#FFFFFF")}
                   />
-                  {/* <div style={} className='ms-3 '></div> */}
 
                   <div className="d-flex flex-column">
-                    <div style={firstbox} className="ms-3 rounded-2"></div>
+                    <div style={firstbox} className="ms-1 rounded-2"></div>
                     <div className="mt-3">
                       <p className="border p-2 rounded-3 text-muted ms-3">
                         #FFFFFF
@@ -157,14 +156,15 @@ export const NewPlanmainPage = () => {
                     </div>
                   </div>
                 </div>
-                <div className="d-flex justify-content-center align-items-center mt-5 mt-md-0">
+                <div className="d-flex justify-content-center align-items-center mt-5 mt-md-0 ">
                   <input
                     type="radio"
+                    name="color"
                     onChange={() => handleColorChange("#FFE9AF")}
                   />
 
                   <div className="d-flex flex-column">
-                    <div style={secondbox} className="ms-3 rounded-2"></div>
+                    <div style={secondbox} className="ms-1 rounded-2"></div>
                     <div className="mt-3">
                       <p className="border p-2 rounded-3 text-muted ms-3">
                         #FFE9AF
@@ -175,10 +175,11 @@ export const NewPlanmainPage = () => {
                 <div className="d-flex justify-content-center align-items-center  mt-5 mt-md-0">
                   <input
                     type="radio"
+                    name="color"
                     onChange={() => handleColorChange("#FBBC1B")}
                   />
                   <div className="d-flex flex-column">
-                    <div style={thirdbox} className="ms-3 rounded-2"></div>
+                    <div style={thirdbox} className="ms-1 rounded-2"></div>
                     <div className="mt-3">
                       <p className="border p-2 rounded-3 text-muted ms-3">
                         #FBBC1B
@@ -218,9 +219,7 @@ export const NewPlanmainPage = () => {
               margin: "auto",
             }}
           >
-            <div className="text-end p-3">
-              <img src="/cards/Group 1000004914 (1).svg" alt="" />
-            </div>
+            <div className="text-end p-3"></div>
 
             <div
               className="text-center w-75 m-auto mb-3 mt-5"
@@ -234,10 +233,10 @@ export const NewPlanmainPage = () => {
                   fontWeight: "400",
                 }}
               >
-                {planTitle}
+                {planData.title}
               </p>
               <p className="mb-4 mt-3 ">
-                <b style={{ fontSize: "27.04px" }}> {planValue} </b>
+                <b style={{ fontSize: "27.04px" }}> $ {planData.price} </b>
                 <span className="ms-1" style={{ color: "#616161" }}>
                   /month
                 </span>{" "}
@@ -248,16 +247,16 @@ export const NewPlanmainPage = () => {
               style={{ fontSize: "13.52px", fontWeight: "500" }}
             >
               <p>
-                <img src="/Darker Tick mark.svg" alt="" className="me-3" />
-                ads
-              </p>
-              <p>
-                <img src="/Darker Tick mark.svg" alt="" className="me-3" />3 Pin
-                fixed on map all yours
-              </p>
-              <p>
-                <img src="/Darker Tick mark.svg" alt="" className="me-3" />1 Pin
-                fixed on map all yours
+                {planData.description.split("\n").map((line, index) => (
+                  <div key={index}>
+                    <img
+                      src="/Darker Tick mark.svg"
+                      alt="tick mark"
+                      className="me-3"
+                    />
+                    <span>{line}</span>
+                  </div>
+                ))}
               </p>
             </div>
           </div>
