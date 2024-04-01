@@ -4,6 +4,7 @@ import "../Components/faltCard.css";
 import axios from "axios"; // Import Axios
 import { ToastContainer, toast } from "react-toastify";
 import { baseurl } from "../../../const.js";
+
 export const createNew = () => {
   const firstbox = {
     width: "90px",
@@ -145,12 +146,12 @@ export const createNew = () => {
                 <div className="d-flex justify-content-center align-items-center">
                   <input
                     type="radio"
+                    name="color"
                     onChange={() => handleColorChange("#FFFFFF")}
                   />
-                  {/* <div style={} className='ms-3 '></div> */}
 
                   <div className="d-flex flex-column">
-                    <div style={firstbox} className="ms-3 rounded-2"></div>
+                    <div style={firstbox} className="ms-1 rounded-2"></div>
                     <div className="mt-3">
                       <p className="border p-2 rounded-3 text-muted ms-3">
                         #FFFFFF
@@ -158,14 +159,15 @@ export const createNew = () => {
                     </div>
                   </div>
                 </div>
-                <div className="d-flex justify-content-center align-items-center mt-5 mt-md-0">
+                <div className="d-flex justify-content-center align-items-center mt-5 mt-md-0 ">
                   <input
                     type="radio"
+                    name="color"
                     onChange={() => handleColorChange("#FFE9AF")}
                   />
 
                   <div className="d-flex flex-column">
-                    <div style={secondbox} className="ms-3 rounded-2"></div>
+                    <div style={secondbox} className="ms-1 rounded-2"></div>
                     <div className="mt-3">
                       <p className="border p-2 rounded-3 text-muted ms-3">
                         #FFE9AF
@@ -176,10 +178,11 @@ export const createNew = () => {
                 <div className="d-flex justify-content-center align-items-center  mt-5 mt-md-0">
                   <input
                     type="radio"
+                    name="color"
                     onChange={() => handleColorChange("#FBBC1B")}
                   />
                   <div className="d-flex flex-column">
-                    <div style={thirdbox} className="ms-3 rounded-2"></div>
+                    <div style={thirdbox} className="ms-1 rounded-2"></div>
                     <div className="mt-3">
                       <p className="border p-2 rounded-3 text-muted ms-3">
                         #FBBC1B
@@ -252,7 +255,7 @@ export const createNew = () => {
                 {description.split("\n").map((line, index) => (
                   <div key={index}>
                     <img
-                      src="./Darker Tick mark.svg"
+                      src="/Darker Tick mark.svg"
                       alt="tick mark"
                       className="me-3"
                     />

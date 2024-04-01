@@ -16,7 +16,7 @@ export const PlanBannerTab = () => {
           <h3 className="text-muted">Plans</h3>
         </Col>
         <Col xl={2} lg={2} xs={9}>
-          <Link to='/CreatenewPlan'>
+          {/* <Link to='/CreatenewPlan'>
             <button
               className={`border-0 p-3 w-100 text-white rounded-3 ${
                 activeButton === 'newPlan' ? 'activeButton' : 'inactiveButton'
@@ -28,7 +28,7 @@ export const PlanBannerTab = () => {
             >
               New plan
             </button>
-          </Link>
+          </Link> */}
         </Col>
         <Col xl={2} lg={2} xs={12}>
           <Link to="/CreatePlansUser">
