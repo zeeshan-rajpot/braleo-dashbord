@@ -1,25 +1,19 @@
 import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
-import { baseurl } from "../../../../const";
+import { baseurl } from "../../../const";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
 
-export const Delete = ({ onHide, onUpdate, id }) => {
+export const Delete = ({ onHide, userId, onUpdate }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
-  const deleteData = {
-    listings: [`${id}`],
-    operation: "delete",
-  };
-
   const handleConfirmation = async () => {
-    const token = localStorage.getItem("token");
-    console.log(token);
     try {
+      // Retrieve token from localStorage
+      const token = localStorage.getItem("token");
+
       // Make a DELETE request to your API endpoint with the userId and token
-      await axios.put(
-        `${baseurl}/api/administration/listing/modify`,
-        deleteData,
+      await axios.delete(
+        `${baseurl}/api/administration/delete-admin/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -29,30 +23,14 @@ export const Delete = ({ onHide, onUpdate, id }) => {
 
       // Set the state to true to show the confirmation message
       setIsConfirmed(true);
-      setTimeout(() => {
-        onUpdate();
-      }, 2000);
+      onUpdate();
     } catch (error) {
       console.error("Error deleting item:", error);
-      toast.error("Error deleting item");
     }
-    console.log(deleteData);
   };
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
       {!isConfirmed && (
         <div className="bg-white rounded-4 respmob" style={{ width: "80%" }}>
           <div className="text-end p-3">

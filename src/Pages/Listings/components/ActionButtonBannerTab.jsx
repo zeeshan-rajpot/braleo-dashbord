@@ -42,7 +42,6 @@ const ActionButtonBannerTab = () => {
       <Container className=''>
         <Row className='mt-4 border-bottom pb-3'>
           <Col xl={3} lg={4} xs={12}>
-            {/* <Link className='text-muted' to='/Listings'> */}
             <h3 className='text-muted'>Listings</h3>
             {/* </Link> */}
           </Col>
