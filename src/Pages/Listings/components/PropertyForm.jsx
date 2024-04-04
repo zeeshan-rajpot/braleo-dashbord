@@ -5,8 +5,10 @@ import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { ToastContainer, toast } from "react-toastify";
 import { baseurl } from "../../../const.js";
+import { LabelList } from "recharts";
 
-const EventsForm = () => {
+const PropertyForm = () => {
+  const [userType, setUserType] = useState("user");
   const [loading, setLoading] = useState(false);
   const [thumnail, setThumnail] = useState("");
   const [adPics, setAdPics] = useState([]);
@@ -27,9 +29,11 @@ const EventsForm = () => {
   ]);
 
   const [listingData, setListingData] = useState({
-    listingType: "event",
+    listingType: "property",
+    userType: "user",
     title: "",
     description: "",
+    price: null,
     thumnail: thumnail,
     images: adPics,
     keywords: keywords,
@@ -40,16 +44,17 @@ const EventsForm = () => {
       zipCode: "",
       coordinates: [],
     },
-    date: "",
-    time: "",
-    start: "",
-    end: "",
-    socials: { whatsApp: "", instagram: "", facebook: "", website: "" },
+
+    dorms: null,
+    bathroom: null,
+    suites: null,
+    jobs: null,
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
+    // If the input name is within location, update location
     if (name.startsWith("location.")) {
       const locationField = name.split(".")[1];
       setListingData((prevState) => ({
@@ -57,15 +62,6 @@ const EventsForm = () => {
         location: {
           ...prevState.location,
           [locationField]: value,
-        },
-      }));
-    } else if (name.startsWith("socials.")) {
-      const socialsField = name.split(".")[1];
-      setListingData((prevState) => ({
-        ...prevState,
-        socials: {
-          ...prevState.socials,
-          [socialsField]: value,
         },
       }));
     } else {
@@ -131,7 +127,7 @@ const EventsForm = () => {
         thumnail: response.data.url,
       }));
 
-      // console.log(response.data.url);
+      console.log(response.data.url);
     } catch (error) {
       console.error("Error uploading image:", error);
     } finally {
@@ -184,7 +180,7 @@ const EventsForm = () => {
         ...prevState,
         images: [...prevState.images, response.data.url],
       }));
-      // console.log(response.data.url);
+      console.log(response.data.url);
     } catch (error) {
       console.error("Error uploading image:", error);
     }
@@ -216,9 +212,11 @@ const EventsForm = () => {
 
   const resetFields = () => {
     setListingData({
-      listingType: "event",
+      listingType: "property",
       title: "",
+      userType: "user",
       description: "",
+      price: null,
       thumnail: thumnail,
       images: adPics,
       keywords: keywords,
@@ -229,11 +227,11 @@ const EventsForm = () => {
         zipCode: "",
         coordinates: [],
       },
-      date: "",
-      time: "",
-      start: "",
-      end: "",
-      socials: { whatsApp: "", instagram: "", facebook: "", website: "" },
+
+      dorms: null,
+      bathroom: null,
+      suites: null,
+      jobs: null,
     });
   };
 
@@ -252,17 +250,39 @@ const EventsForm = () => {
         theme="light"
       />
       <Row>
-        <Row>
-          <div>
-            <label className="text-muted mt-4">Listing Title</label>
-            <input
-              placeholder="Immigration Paralegal Services"
-              className="border border-1 rounded-3 p-2 w-100 "
-              name="title"
-              value={listingData.title}
-              onChange={handleInputChange}
-            />
-          </div>
+        <Row className="mt-4">
+          <Col md={6}>
+            <div>
+              <label className="text-muted">Select listing type</label>
+              <select
+                className="border border-1 rounded-3 p-2 w-100"
+                name="userType"
+                value={userType}
+                onChange={(e) => {
+                  setUserType(e.target.value);
+                  setListingData((prevState) => ({
+                    ...prevState,
+                    userType: e.target.value,
+                  }));
+                }}
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </Col>
+          <Col md={6}>
+            <div>
+              <label className="text-muted">Listing Title</label>
+              <input
+                placeholder="Immigration Paralegal Services"
+                className="border border-1 rounded-3 p-2 w-100 "
+                name="title"
+                value={listingData.title}
+                onChange={handleInputChange}
+              />
+            </div>
+          </Col>
         </Row>
         <Row className="mt-4">
           <Col xl={6} xs={12}>
@@ -327,80 +347,6 @@ const EventsForm = () => {
           </Col>
         </Row>
         <Row className="mt-4">
-          <Col md={3} xs={12}>
-            {" "}
-            <div>
-              <label className="text-muted">Date</label>
-              <input
-                placeholder="13/09/2023"
-                className="border border-1 rounded-3 p-2 w-100 "
-                name="date"
-                type="date"
-                value={listingData.date}
-                onChange={handleInputChange}
-              />
-            </div>
-          </Col>
-          <Col md={3} xs={12}>
-            {" "}
-            <div>
-              <label className="text-muted ">Schedule</label>
-              <input
-                placeholder="4pm"
-                className="border border-1 rounded-3 p-2 w-100 "
-                name="time"
-                value={listingData.time}
-                onChange={handleInputChange}
-              />
-            </div>
-          </Col>
-          <Col md={3} xs={12}>
-            {" "}
-            <div>
-              <label className="text-muted mt-3 mt-md-0">
-                Start
-                <small
-                  className="ms-3 text-nowrap"
-                  style={{ fontSize: "13px" }}
-                >
-                  {" "}
-                  (Approximate time)
-                </small>
-              </label>
-              <input
-                placeholder="13PM"
-                className="border border-1 rounded-3 p-2 w-100 "
-                name="start"
-                value={listingData.start}
-                onChange={handleInputChange}
-              />
-            </div>
-          </Col>
-          <Col md={3} xs={12}>
-            {" "}
-            <div>
-              <label className="text-muted mt-3 mt-md-0">
-                Finishing
-                <small
-                  className="ms-3 text-nowrap "
-                  style={{ fontSize: "13px" }}
-                >
-                  {" "}
-                  (Approximate hour)
-                </small>
-              </label>
-              <input
-                placeholder="4pm"
-                className="border border-1 rounded-3 p-2 w-100 "
-                name="end"
-                value={listingData.end}
-                onChange={handleInputChange}
-              />
-            </div>
-          </Col>
-        </Row>
-
-        <Row className="mt-4">
           <Col md={4} xs={12}>
             {" "}
             <div>
@@ -432,7 +378,7 @@ const EventsForm = () => {
             <div>
               <label className="text-muted mt-3 mt-md-0">City</label>
               <input
-                placeholder="Braelo Avenue, 888 Florida"
+                placeholder="Lahore"
                 className="border border-1 rounded-3 p-2 w-100 "
                 name="location.city"
                 value={listingData.location.city}
@@ -475,7 +421,6 @@ const EventsForm = () => {
                       ...listingData.location,
                       coordinates: coordinatesArray,
                     },
-                    socials: { ...listingData.socials }, // Ensure other fields remain unchanged
                   });
                 }}
               />
@@ -483,26 +428,46 @@ const EventsForm = () => {
           </Col>
         </Row>
         <Row className="mt-4">
+          <div>
+            <label className="text-muted">Price</label>
+            <input
+              placeholder="$ 90,000"
+              className="border border-1 rounded-3 p-2 w-100 "
+              name="price"
+              type="number"
+              min="0"
+              value={listingData.price}
+              onChange={handleInputChange}
+            />
+          </div>
+        </Row>
+        <Row className="mt-4">
           <Col md={6} xs={12}>
             <div>
-              <label className="text-muted">Website</label>
+              <label className="text-muted mt-3 mt-md-0">Dorms</label>
               <input
-                placeholder="https://braelo.co/"
+                placeholder="5 Dorms"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="socials.website"
-                value={listingData.socials.website}
+                name="dorms"
+                type="number"
+                min="0"
+                step="0"
+                value={listingData.dorms}
                 onChange={handleInputChange}
               />
             </div>
           </Col>
           <Col md={6} xs={12}>
             <div>
-              <label className="text-muted mt-3 mt-md-0">Whatsapp</label>
+              <label className="text-muted mt-3 mt-md-0">Bathrooms</label>
               <input
-                placeholder="https://wa.me/00000000"
+                placeholder="2 Bathrooms"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="socials.whatsApp"
-                value={listingData.socials.whatsApp}
+                name="bathroom"
+                type="number"
+                min="0"
+                step="0"
+                value={listingData.bathroom}
                 onChange={handleInputChange}
               />
             </div>
@@ -511,24 +476,38 @@ const EventsForm = () => {
         <Row className="mt-4">
           <Col md={6} xs={12}>
             <div>
-              <label className="text-muted">Facebook</label>
+              <label className="text-muted mt-3 mt-md-0">Suites</label>
               <input
-                placeholder="fb.com/youraccount"
+                placeholder="1 Suite"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="socials.facebook"
-                value={listingData.socials.facebook}
+                name="suites"
+                type="number"
+                min="0"
+                step="0"
+                value={listingData.suites}
                 onChange={handleInputChange}
               />
             </div>
           </Col>
           <Col md={6} xs={12}>
             <div>
-              <label className="text-muted mt-3 mt-md-0">Instagram</label>
+              <label className="text-muted mt-3 mt-md-0">
+                Jobs{" "}
+                <small
+                  className="ms-3 text-nowrap"
+                  style={{ fontSize: "13px" }}
+                >
+                  (Garage)
+                </small>
+              </label>
               <input
-                placeholder="https://wa.me/00000000"
+                placeholder="3 vagas"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="socials.instagram"
-                value={listingData.socials.instagram}
+                name="jobs"
+                type="number"
+                min="0"
+                step="0"
+                value={listingData.jobs}
                 onChange={handleInputChange}
               />
             </div>
@@ -684,4 +663,4 @@ const EventsForm = () => {
   );
 };
 
-export default EventsForm;
+export default PropertyForm;

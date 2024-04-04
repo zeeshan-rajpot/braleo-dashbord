@@ -6,7 +6,8 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { ToastContainer, toast } from "react-toastify";
 import { baseurl } from "../../../const.js";
 
-const EventsForm = () => {
+const ServiceForm = () => {
+  const [listingType, setListingType] = useState("event");
   const [loading, setLoading] = useState(false);
   const [thumnail, setThumnail] = useState("");
   const [adPics, setAdPics] = useState([]);
@@ -27,12 +28,15 @@ const EventsForm = () => {
   ]);
 
   const [listingData, setListingData] = useState({
-    listingType: "event",
+    listingType: "service",
+    category: "",
+    subcategory: "",
     title: "",
     description: "",
     thumnail: thumnail,
     images: adPics,
     keywords: keywords,
+
     location: {
       address: "",
       state: "",
@@ -40,16 +44,16 @@ const EventsForm = () => {
       zipCode: "",
       coordinates: [],
     },
-    date: "",
-    time: "",
-    start: "",
-    end: "",
-    socials: { whatsApp: "", instagram: "", facebook: "", website: "" },
+
+    price: null,
+    advertiserName: "",
+    whatsApp: "",
   });
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
 
+    // If the input name is within location, update location
     if (name.startsWith("location.")) {
       const locationField = name.split(".")[1];
       setListingData((prevState) => ({
@@ -57,15 +61,6 @@ const EventsForm = () => {
         location: {
           ...prevState.location,
           [locationField]: value,
-        },
-      }));
-    } else if (name.startsWith("socials.")) {
-      const socialsField = name.split(".")[1];
-      setListingData((prevState) => ({
-        ...prevState,
-        socials: {
-          ...prevState.socials,
-          [socialsField]: value,
         },
       }));
     } else {
@@ -130,8 +125,6 @@ const EventsForm = () => {
         ...prevState,
         thumnail: response.data.url,
       }));
-
-      // console.log(response.data.url);
     } catch (error) {
       console.error("Error uploading image:", error);
     } finally {
@@ -184,7 +177,6 @@ const EventsForm = () => {
         ...prevState,
         images: [...prevState.images, response.data.url],
       }));
-      // console.log(response.data.url);
     } catch (error) {
       console.error("Error uploading image:", error);
     }
@@ -211,17 +203,19 @@ const EventsForm = () => {
       console.error("Error:", error);
       toast.error(error.response.data.errors.msg);
     }
-    console.log(listingData);
   };
 
   const resetFields = () => {
     setListingData({
-      listingType: "event",
+      listingType: "service",
+      category: "",
+      subcategory: "",
       title: "",
       description: "",
       thumnail: thumnail,
       images: adPics,
       keywords: keywords,
+
       location: {
         address: "",
         state: "",
@@ -229,11 +223,10 @@ const EventsForm = () => {
         zipCode: "",
         coordinates: [],
       },
-      date: "",
-      time: "",
-      start: "",
-      end: "",
-      socials: { whatsApp: "", instagram: "", facebook: "", website: "" },
+
+      price: null,
+      advertiserName: "",
+      whatsApp: "",
     });
   };
 
@@ -252,18 +245,46 @@ const EventsForm = () => {
         theme="light"
       />
       <Row>
-        <Row>
+        <Row className="mt-4">
           <div>
-            <label className="text-muted mt-4">Listing Title</label>
+            <label className="text-muted">Listing Title</label>
             <input
               placeholder="Immigration Paralegal Services"
               className="border border-1 rounded-3 p-2 w-100 "
               name="title"
               value={listingData.title}
-              onChange={handleInputChange}
+              onChange={handleChange}
             />
           </div>
         </Row>
+
+        <Row className="mt-4">
+          <Col md={6}>
+            <div>
+              <label className="text-muted">Category</label>
+              <input
+                placeholder="Cleaning"
+                className="border border-1 rounded-3 p-2 w-100 "
+                name="category"
+                value={listingData.category}
+                onChange={handleChange}
+              />
+            </div>
+          </Col>
+          <Col md={6}>
+            <div>
+              <label className="text-muted">Sub Category</label>
+              <input
+                placeholder="House Cleaning"
+                className="border border-1 rounded-3 p-2 w-100 "
+                name="subcategory"
+                value={listingData.subcategory}
+                onChange={handleChange}
+              />
+            </div>
+          </Col>
+        </Row>
+
         <Row className="mt-4">
           <Col xl={6} xs={12}>
             <div className="w-100">
@@ -274,7 +295,7 @@ const EventsForm = () => {
                 className="border border-1 rounded-3 p-2 w-100 h-70"
                 name="description"
                 value={listingData.description}
-                onChange={handleInputChange}
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -326,79 +347,6 @@ const EventsForm = () => {
             </div>
           </Col>
         </Row>
-        <Row className="mt-4">
-          <Col md={3} xs={12}>
-            {" "}
-            <div>
-              <label className="text-muted">Date</label>
-              <input
-                placeholder="13/09/2023"
-                className="border border-1 rounded-3 p-2 w-100 "
-                name="date"
-                type="date"
-                value={listingData.date}
-                onChange={handleInputChange}
-              />
-            </div>
-          </Col>
-          <Col md={3} xs={12}>
-            {" "}
-            <div>
-              <label className="text-muted ">Schedule</label>
-              <input
-                placeholder="4pm"
-                className="border border-1 rounded-3 p-2 w-100 "
-                name="time"
-                value={listingData.time}
-                onChange={handleInputChange}
-              />
-            </div>
-          </Col>
-          <Col md={3} xs={12}>
-            {" "}
-            <div>
-              <label className="text-muted mt-3 mt-md-0">
-                Start
-                <small
-                  className="ms-3 text-nowrap"
-                  style={{ fontSize: "13px" }}
-                >
-                  {" "}
-                  (Approximate time)
-                </small>
-              </label>
-              <input
-                placeholder="13PM"
-                className="border border-1 rounded-3 p-2 w-100 "
-                name="start"
-                value={listingData.start}
-                onChange={handleInputChange}
-              />
-            </div>
-          </Col>
-          <Col md={3} xs={12}>
-            {" "}
-            <div>
-              <label className="text-muted mt-3 mt-md-0">
-                Finishing
-                <small
-                  className="ms-3 text-nowrap "
-                  style={{ fontSize: "13px" }}
-                >
-                  {" "}
-                  (Approximate hour)
-                </small>
-              </label>
-              <input
-                placeholder="4pm"
-                className="border border-1 rounded-3 p-2 w-100 "
-                name="end"
-                value={listingData.end}
-                onChange={handleInputChange}
-              />
-            </div>
-          </Col>
-        </Row>
 
         <Row className="mt-4">
           <Col md={4} xs={12}>
@@ -410,7 +358,7 @@ const EventsForm = () => {
                 className="border border-1 rounded-3 p-2 w-100 "
                 name="location.address"
                 value={listingData.location.address}
-                onChange={handleInputChange}
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -419,11 +367,11 @@ const EventsForm = () => {
             <div>
               <label className="text-muted">State</label>
               <input
-                placeholder="Pakistan"
+                placeholder="SE1 7AB"
                 className="border border-1 rounded-3 p-2 w-100 "
                 name="location.state"
                 value={listingData.location.state}
-                onChange={handleInputChange}
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -436,7 +384,7 @@ const EventsForm = () => {
                 className="border border-1 rounded-3 p-2 w-100 "
                 name="location.city"
                 value={listingData.location.city}
-                onChange={handleInputChange}
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -451,7 +399,7 @@ const EventsForm = () => {
                 className="border border-1 rounded-3 p-2 w-100 "
                 name="location.zipCode"
                 value={listingData.location.zipCode}
-                onChange={handleInputChange}
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -475,7 +423,6 @@ const EventsForm = () => {
                       ...listingData.location,
                       coordinates: coordinatesArray,
                     },
-                    socials: { ...listingData.socials }, // Ensure other fields remain unchanged
                   });
                 }}
               />
@@ -483,53 +430,41 @@ const EventsForm = () => {
           </Col>
         </Row>
         <Row className="mt-4">
-          <Col md={6} xs={12}>
+          <Col md={4}>
             <div>
-              <label className="text-muted">Website</label>
+              <label className="text-muted">Price</label>
               <input
-                placeholder="https://braelo.co/"
+                placeholder="$ 90000"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="socials.website"
-                value={listingData.socials.website}
-                onChange={handleInputChange}
+                type="number"
+                min="0"
+                name="price"
+                value={listingData.price}
+                onChange={handleChange}
               />
             </div>
           </Col>
-          <Col md={6} xs={12}>
+          <Col md={4}>
             <div>
-              <label className="text-muted mt-3 mt-md-0">Whatsapp</label>
+              <label className="text-muted mt-3 mt-md-0">Advertiser Name</label>
+              <input
+                placeholder="Julius Ceaser"
+                className="border border-1 rounded-3 p-2 w-100 "
+                name="advertiserName"
+                value={listingData.advertiserName}
+                onChange={handleChange}
+              />
+            </div>
+          </Col>
+          <Col md={4}>
+            <div>
+              <label className="text-muted mt-3 mt-md-0">WhatsApp</label>
               <input
                 placeholder="https://wa.me/00000000"
                 className="border border-1 rounded-3 p-2 w-100 "
-                name="socials.whatsApp"
-                value={listingData.socials.whatsApp}
-                onChange={handleInputChange}
-              />
-            </div>
-          </Col>
-        </Row>
-        <Row className="mt-4">
-          <Col md={6} xs={12}>
-            <div>
-              <label className="text-muted">Facebook</label>
-              <input
-                placeholder="fb.com/youraccount"
-                className="border border-1 rounded-3 p-2 w-100 "
-                name="socials.facebook"
-                value={listingData.socials.facebook}
-                onChange={handleInputChange}
-              />
-            </div>
-          </Col>
-          <Col md={6} xs={12}>
-            <div>
-              <label className="text-muted mt-3 mt-md-0">Instagram</label>
-              <input
-                placeholder="https://wa.me/00000000"
-                className="border border-1 rounded-3 p-2 w-100 "
-                name="socials.instagram"
-                value={listingData.socials.instagram}
-                onChange={handleInputChange}
+                name="whatsApp"
+                value={listingData.whatsApp}
+                onChange={handleChange}
               />
             </div>
           </Col>
@@ -684,4 +619,4 @@ const EventsForm = () => {
   );
 };
 
-export default EventsForm;
+export default ServiceForm;

@@ -14,7 +14,6 @@ export const Delete = ({ onHide, onUpdate, id }) => {
 
   const handleConfirmation = async () => {
     const token = localStorage.getItem("token");
-    console.log(token);
     try {
       // Make a DELETE request to your API endpoint with the userId and token
       await axios.put(
@@ -31,7 +30,7 @@ export const Delete = ({ onHide, onUpdate, id }) => {
       setIsConfirmed(true);
       setTimeout(() => {
         onUpdate();
-      }, 2000);
+      }, 1000);
     } catch (error) {
       console.error("Error deleting item:", error);
       toast.error("Error deleting item");
