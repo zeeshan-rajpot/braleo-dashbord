@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import DelCard from "../../Listings/components/Delet Modal/Delete.jsx";
+import DelCard from "../Components/Delete";
 import { Link } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 
